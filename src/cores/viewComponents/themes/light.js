@@ -1,0 +1,16 @@
+export default {
+    $theme: 'light',
+    $textColor: 'black',
+    $bgColor: '#FFF',
+    $background:'#EBEBEB',
+    $statusBar:'dark-content',
+    $item:'#FFF',
+    $TextInput:'#a8a8a8',
+    $border:'#DDDDDD',
+    $menu:'white',
+    $TextManganeseGrey:'#50504b',
+    $chuyenmau: 'black',
+    $header: '#368fc7',
+    $borderColor: 'white',
+    $bg2: "#FFF",
+}
