@@ -138,7 +138,7 @@ export default class DetailsTheme1 extends Component {
 
 
         let array = [];
-        firebaseApp.database().ref('data').child('bds').on('value', function (snapshot) {
+        firebaseApp.database().ref('data').child('bds').once('value', function (snapshot) {
             snapshot.forEach(function (childSnapshot) {
                 let childData = childSnapshot.val();
                 array.push({

@@ -55,9 +55,10 @@ export default class Favourites extends Component {
         super(props);
 
         this.page = 1;
+        this.fetchUser = firebaseApp.database();
 
         this.state = {
-            loading: false,
+            loading: true,
             isRefreshing: false,
             data: [],
             error: '',
@@ -121,6 +122,8 @@ export default class Favourites extends Component {
             });
             thisState.setState({
                 data: array,
+                isRefreshing: false,
+                loading: false,
             });
         });
 
@@ -129,6 +132,25 @@ export default class Favourites extends Component {
     render() {
         const {navigate} = this.props.navigation;
         const color = this.state.bg;
+        if (this.state.loading) {
+            return (
+                <View style={styles.container}>
+                    <StatusBar
+                        // barStyle="$statusBar"
+                        hidden={false}
+                        backgroundColor="transparent"
+                        translucent
+                    />
+                    <View style={styles.header}>
+                        <View style={styles.iconLeft}/>
+                        {/*<Icon4 onPress={() => navigate('Menu')} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>*/}
+                        <TextComponent style={styles.titleHeader}>{Locales.Favourites}</TextComponent>
+                        <Icon onPress={() => navigate("LoadMore")} style={styles.iconBell} name="bell" size={px2dp(30)}/>
+                    </View>
+                    <ActivityIndicator size="large" />
+                </View>
+            );
+        }
         return (
             <View style={styles.container}>
                 <StatusBar
@@ -147,6 +169,12 @@ export default class Favourites extends Component {
                     <FlatList
                         showsVerticalScrollIndicator={false}
                         data={this.state.data}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.isRefreshing}
+                                onRefresh={this.onRefresh.bind(this)}
+                            />
+                        }
                         renderItem={({item}) => (
                             <View style={styles.content}>
                                 <TouchableOpacity style={styles.item} onPress={() => navigate('Details', {item: item})}>
@@ -193,11 +221,86 @@ export default class Favourites extends Component {
                             </View>
                         )}
                         keyExtractor={(item, index) => item.id}
+                        //onEndReached={this.handleLoadMore.bind(this)}
                         //numColumns={1}
+                        ItemSeparatorComponent={this.renderSeparator}
+                        ListFooterComponent={this.renderFooter.bind(this)}
+                        onEndReachedThreshold={0.4}
                     />
                 </View>
             </View>
         );
+    }
+
+    renderSeparator = () => {
+        return (
+            <View
+                style={{
+                    height: 2,
+                    width: '100%',
+                    backgroundColor: '#CED0CE'
+                }}
+            />
+        );
+    };
+
+    renderFooter = () => {
+        //it will show indicator at the bottom of the list when data is loading otherwise it returns null
+        if (this.state.loading) return null;
+        return (
+            <ActivityIndicator
+                style={{ color: '#000' }}
+            />
+        );
+    };
+
+    handleLoadMore = () => {
+        if (this.state.loading) {
+            this.page = this.page + 1; // increase page by 1
+            this.fetchUser(this.page); // method for API call
+        }
+    };
+
+    onRefresh() {
+        this.setState({ isRefreshing: true }); // true isRefreshing flag for enable pull to refresh indicator
+        let array = [];
+        firebaseApp.database().ref('data').child('favourite').on('value', function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+                let childData = childSnapshot.val();
+                array.push({
+                    id: childSnapshot.key,
+                    address: childData.address,
+                    avatar: childData.avatar,
+                    bathrooms: childData.bathrooms,
+                    bedrooms: childData.bedrooms,
+                    description: childData.description,
+                    detail: childData.detail,
+                    image: childData.image,
+                    kitchen: childData.kitchen,
+                    landmark: childData.landmark,
+                    latitude: childData.latitude,
+                    latitudeDelta: childData.latitudeDelta,
+                    link: childData.link,
+                    longitude: childData.longitude,
+                    longitudeDelta: childData.longitudeDelta,
+                    name: childData.name,
+                    owner: childData.owner,
+                    parkings: childData.parkings,
+                    price: childData.price,
+                    rate: childData.rate,
+                    sqm: childData.sqm,
+                    status: childData.status,
+                    type: childData.type,
+                    year: childData.year,
+                    checkFavourite: childData.checkFavourite,
+                });
+            });
+            thisState.setState({
+                data: array,
+                isRefreshing: false,
+                loading: false,
+            });
+        });
     }
 
 }

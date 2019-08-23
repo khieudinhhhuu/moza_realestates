@@ -307,7 +307,7 @@ export default class ProfileTheme1 extends Component {
                         <View style={styles.content}>
                             <TouchableOpacity style={[styles.addPost, {backgroundColor: color}]} onPress={() => navigate('Sell')}>
                                 <Icon5 style={styles.iconAddPost} name="add-circle-outline" size={px2dp(18)} color="#fff"/>
-                                <TextComponent style={styles.textAddPost}>{Locales.PostBelieve}</TextComponent>
+                                <TextComponent style={styles.textAddPost}>{Locales.PostSale}</TextComponent>
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.editPost, {backgroundColor: color}]} onPress={() => this._onUpdate()}>
                                 <Icon4 style={styles.iconEditPost} name="edit" size={px2dp(17)} color="#fff"/>
