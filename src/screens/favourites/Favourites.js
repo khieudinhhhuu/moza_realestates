@@ -59,8 +59,9 @@ export default class Favourites extends Component {
 
         this.state = {
             loading: true,
-            isRefreshing: false,
+            isRefreshing: true,
             data: [],
+            data2: [],
             error: '',
             bg: colors.blue,
         };
@@ -122,12 +123,13 @@ export default class Favourites extends Component {
             });
             thisState.setState({
                 data: array,
-                isRefreshing: false,
                 loading: false,
+                isRefreshing: false,
             });
         });
 
     }
+
 
     render() {
         const {navigate} = this.props.navigation;
@@ -169,6 +171,7 @@ export default class Favourites extends Component {
                     <FlatList
                         showsVerticalScrollIndicator={false}
                         data={this.state.data}
+                        extraData={this.state}
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state.isRefreshing}
@@ -221,7 +224,7 @@ export default class Favourites extends Component {
                             </View>
                         )}
                         keyExtractor={(item, index) => item.id}
-                        //onEndReached={this.handleLoadMore.bind(this)}
+                        onEndReached={this.handleLoadMore.bind(this)}
                         //numColumns={1}
                         ItemSeparatorComponent={this.renderSeparator}
                         ListFooterComponent={this.renderFooter.bind(this)}
@@ -257,50 +260,136 @@ export default class Favourites extends Component {
     handleLoadMore = () => {
         if (this.state.loading) {
             this.page = this.page + 1; // increase page by 1
-            this.fetchUser(this.page); // method for API call
+            //this.fetchUser(this.page); // method for API call
+            let array = [];
+            firebaseApp.database().ref('data').child('favourite').on('value', function (snapshot) {
+                snapshot.forEach(function (childSnapshot) {
+                    let childData = childSnapshot.val();
+                    array.push({
+                        id: childSnapshot.key,
+                        address: childData.address,
+                        avatar: childData.avatar,
+                        bathrooms: childData.bathrooms,
+                        bedrooms: childData.bedrooms,
+                        description: childData.description,
+                        detail: childData.detail,
+                        image: childData.image,
+                        kitchen: childData.kitchen,
+                        landmark: childData.landmark,
+                        latitude: childData.latitude,
+                        latitudeDelta: childData.latitudeDelta,
+                        link: childData.link,
+                        longitude: childData.longitude,
+                        longitudeDelta: childData.longitudeDelta,
+                        name: childData.name,
+                        owner: childData.owner,
+                        parkings: childData.parkings,
+                        price: childData.price,
+                        rate: childData.rate,
+                        sqm: childData.sqm,
+                        status: childData.status,
+                        type: childData.type,
+                        year: childData.year,
+                        checkFavourite: childData.checkFavourite,
+                    });
+                });
+                thisState.setState({
+                    data: array,
+                    loading: false,
+                    isRefreshing: false,
+                });
+            });
         }
     };
 
     onRefresh() {
-        this.setState({ isRefreshing: true }); // true isRefreshing flag for enable pull to refresh indicator
-        let array = [];
-        firebaseApp.database().ref('data').child('favourite').on('value', function (snapshot) {
-            snapshot.forEach(function (childSnapshot) {
-                let childData = childSnapshot.val();
-                array.push({
-                    id: childSnapshot.key,
-                    address: childData.address,
-                    avatar: childData.avatar,
-                    bathrooms: childData.bathrooms,
-                    bedrooms: childData.bedrooms,
-                    description: childData.description,
-                    detail: childData.detail,
-                    image: childData.image,
-                    kitchen: childData.kitchen,
-                    landmark: childData.landmark,
-                    latitude: childData.latitude,
-                    latitudeDelta: childData.latitudeDelta,
-                    link: childData.link,
-                    longitude: childData.longitude,
-                    longitudeDelta: childData.longitudeDelta,
-                    name: childData.name,
-                    owner: childData.owner,
-                    parkings: childData.parkings,
-                    price: childData.price,
-                    rate: childData.rate,
-                    sqm: childData.sqm,
-                    status: childData.status,
-                    type: childData.type,
-                    year: childData.year,
-                    checkFavourite: childData.checkFavourite,
+
+        axios.get()
+            .then(res => {
+                let array2 = this.state.data;
+                firebaseApp.database().ref('data').child('favourite').on('value', function (snapshot) {
+                    snapshot.forEach(function (childSnapshot) {
+                        let childData = childSnapshot.val();
+                        array2.push({
+                            id: childSnapshot.key,
+                            address: childData.address,
+                            avatar: childData.avatar,
+                            bathrooms: childData.bathrooms,
+                            bedrooms: childData.bedrooms,
+                            description: childData.description,
+                            detail: childData.detail,
+                            image: childData.image,
+                            kitchen: childData.kitchen,
+                            landmark: childData.landmark,
+                            latitude: childData.latitude,
+                            latitudeDelta: childData.latitudeDelta,
+                            link: childData.link,
+                            longitude: childData.longitude,
+                            longitudeDelta: childData.longitudeDelta,
+                            name: childData.name,
+                            owner: childData.owner,
+                            parkings: childData.parkings,
+                            price: childData.price,
+                            rate: childData.rate,
+                            sqm: childData.sqm,
+                            status: childData.status,
+                            type: childData.type,
+                            year: childData.year,
+                            checkFavourite: childData.checkFavourite,
+                        });
+                    });
+                    let data = array2.concat(res.data.items);
+                    thisState.setState({
+                        data: data,
+                        isRefreshing: false,
+                        loading: false,
+                    });
                 });
+            })
+            .catch(error => {
+                this.setState({
+                    isRefreshing: false,
+                    error: 'Something just went wrong' }) // false isRefreshing flag for disable pull to refresh
             });
-            thisState.setState({
-                data: array,
-                isRefreshing: false,
-                loading: false,
-            });
-        });
+
+        // let array2 = [];
+        // firebaseApp.database().ref('data').child('favourite').on('value', function (snapshot) {
+        //     snapshot.forEach(function (childSnapshot) {
+        //         let childData = childSnapshot.val();
+        //         array2.push({
+        //             id: childSnapshot.key,
+        //             address: childData.address,
+        //             avatar: childData.avatar,
+        //             bathrooms: childData.bathrooms,
+        //             bedrooms: childData.bedrooms,
+        //             description: childData.description,
+        //             detail: childData.detail,
+        //             image: childData.image,
+        //             kitchen: childData.kitchen,
+        //             landmark: childData.landmark,
+        //             latitude: childData.latitude,
+        //             latitudeDelta: childData.latitudeDelta,
+        //             link: childData.link,
+        //             longitude: childData.longitude,
+        //             longitudeDelta: childData.longitudeDelta,
+        //             name: childData.name,
+        //             owner: childData.owner,
+        //             parkings: childData.parkings,
+        //             price: childData.price,
+        //             rate: childData.rate,
+        //             sqm: childData.sqm,
+        //             status: childData.status,
+        //             type: childData.type,
+        //             year: childData.year,
+        //             checkFavourite: childData.checkFavourite,
+        //         });
+        //     });
+        //     thisState.setState({
+        //         data: array2,
+        //         isRefreshing: false,
+        //         loading: false,
+        //     });
+        // });
     }
 
 }

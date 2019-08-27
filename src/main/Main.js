@@ -51,6 +51,10 @@ import Users from "../screens/users/Users";
 import ChangeTheme from "../screens/settings/ChangeTheme";
 import LoadMore from "../screens/test/LoadMore";
 import DetailsTheme1 from "../screens/details/DetailsTheme1";
+import TestHeaderAnimate from "../screens/test/TestHeaderAnimate";
+import TestHeaderAnimate2 from "../screens/test/TestHeaderAnimate2";
+import HomeMrBean from "../screens/mrbean/HomeMrBean";
+import DetailStore from "../screens/mrbean/DetailStore";
 
 class App extends Component {
 
@@ -233,6 +237,30 @@ const AppNavigator = createStackNavigator({
     },
     LoadMore: {
         screen: LoadMore,
+        navigationOptions: {
+            header: null
+        }
+    },
+    TestHeaderAnimate: {
+        screen: TestHeaderAnimate,
+        navigationOptions: {
+            header: null
+        }
+    },
+    TestHeaderAnimate2: {
+        screen: TestHeaderAnimate2,
+        navigationOptions: {
+            header: null
+        }
+    },
+    HomeMrBean: {
+        screen: HomeMrBean,
+        navigationOptions: {
+            //header: null
+        }
+    },
+    DetailStore: {
+        screen: DetailStore,
         navigationOptions: {
             header: null
         }

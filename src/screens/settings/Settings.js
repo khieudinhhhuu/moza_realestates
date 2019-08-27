@@ -303,13 +303,13 @@ export default class Settings extends Component {
                     <TouchableOpacity style={styles.content} onPress={this.toggleModalTheme}>
                         <TextComponent style={styles.title}>CHANGE COLOR</TextComponent>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.content} onPress={() => this._onUpdate()}>
+                    <TouchableOpacity style={styles.content} onPress={() => navigate("HomeMrBean")}>
                         <TextComponent style={styles.title}>{Locales.PrivacySettings}</TextComponent>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.content} onPress={() => this._onUpdate()}>
+                    <TouchableOpacity style={styles.content} onPress={() => navigate("TestHeaderAnimate2")}>
                         <TextComponent style={styles.title}>{Locales.FaqSettings}</TextComponent>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.content} onPress={() => this._onUpdate()}>
+                    <TouchableOpacity style={styles.content} onPress={() => navigate("TestHeaderAnimate")}>
                         <TextComponent style={styles.title}>{Locales.HelpSettings}</TextComponent>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.content} onPress={() => this.signOutUser()}>

@@ -208,14 +208,19 @@ export default class LoadMore extends Component {
         axios.get(url)
             .then(res => {
                 let data = res.data.items;
-                this.setState({ isRefreshing: false, data: data }) // false isRefreshing flag for disable pull to refresh indicator, and clear all data and store only first page data
+                this.setState({
+                    isRefreshing: false,
+                    data: data }) // false isRefreshing flag for disable pull to refresh indicator, and clear all data and store only first page data
             })
             .catch(error => {
-                this.setState({ isRefreshing: false, error: 'Something just went wrong' }) // false isRefreshing flag for disable pull to refresh
+                this.setState({
+                    isRefreshing: false,
+                    error: 'Something just went wrong' }) // false isRefreshing flag for disable pull to refresh
             });
     }
 
 }
+
 
 const styles = EStyleSheet.create({
     container: {
