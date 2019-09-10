@@ -55,6 +55,9 @@ import TestHeaderAnimate from "../screens/test/TestHeaderAnimate";
 import TestHeaderAnimate2 from "../screens/test/TestHeaderAnimate2";
 import HomeMrBean from "../screens/mrbean/HomeMrBean";
 import DetailStore from "../screens/mrbean/DetailStore";
+import EditPost from "../screens/edit_post/EditPost";
+import EditOnePost from "../screens/edit_post/EditOnePost";
+
 
 class App extends Component {
 
@@ -177,6 +180,18 @@ const AppNavigator = createStackNavigator({
     },
     SetMap: {
         screen: SetMap,
+        navigationOptions: {
+            header: null
+        }
+    },
+    EditPost: {
+        screen: EditPost,
+        navigationOptions: {
+            header: null
+        }
+    },
+    EditOnePost: {
+        screen: EditOnePost,
         navigationOptions: {
             header: null
         }

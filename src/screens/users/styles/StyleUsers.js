@@ -105,11 +105,13 @@ export const styles = EStyleSheet.create({
     },
     textName: {
         ...medium2_bold,
-        color: "$textColor"
+        color: "$textColor",
+        textAlign: "center",
     },
     textEmail: {
         ...small2,
-        color: "$textColor"
+        color: "$textColor",
+        textAlign: "center",
     },
     follows: {
         width: "90%",

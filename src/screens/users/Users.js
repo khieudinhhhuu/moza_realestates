@@ -94,9 +94,11 @@ export default class Users extends Component {
 
 
         const item = this.props.navigation.state.params.item;
-        //console.log("item8888: " + JSON.stringify(item));
+        console.log("item8888: " + JSON.stringify(item));
         firebaseApp.database().ref('data').child('sell').on('value', function (snapshot) {
+            console.log("snapshot333: " + JSON.stringify(snapshot));
             snapshot.forEach(function (childSnapshot) {
+                console.log("childSnapshot999: " + JSON.stringify(childSnapshot));
                 const childData = childSnapshot.val();
                 if (childData.email === item.email) {
                     thisState.setState({
@@ -105,6 +107,7 @@ export default class Users extends Component {
                     }, () => {
                         console.log("userPosts: " + JSON.stringify(childData));
                         console.log("userPosts_name: " + childData.name);
+                        console.log("userPosts_email: " + childData.email);
                     })
                 }
             });
@@ -112,9 +115,6 @@ export default class Users extends Component {
 
     }
 
-    _onUpdate(){
-        Alert.alert("Function is updating");
-    }
 
     render() {
         const {navigate} = this.props.navigation;
@@ -132,7 +132,7 @@ export default class Users extends Component {
                 <View style={styles.header}>
                     <Icon4 onPress={() => navigation.goBack()} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>
                     <TextComponent style={styles.titleHeader}>{Locales.PersonalInformation}</TextComponent>
-                    <Icon onPress={() => this._onUpdate()} style={styles.iconBell} name="bell" size={px2dp(30)} />
+                    <Icon style={styles.iconBell} name="bell" size={px2dp(30)} />
                 </View>
                 <KeyboardAwareScrollView style={styles.keyboardView}>
                     <View style={styles.body}>
@@ -143,7 +143,7 @@ export default class Users extends Component {
                         <View style={styles.viewInformation}>
                             <TextComponent style={styles.textName}>{item.displayName}</TextComponent>
                             <TextComponent style={styles.textEmail}>Email: {item.email}</TextComponent>
-                            <TextComponent style={styles.textEmail}>{Locales.Address}: {item.address}</TextComponent>
+                            <TextComponent style={styles.textEmail}>{Locales.Address}: {item.addressUser}</TextComponent>
                         </View>
                         <View style={styles.follows}>
                             <Icon8 style={styles.iconFollows} name="rss" size={px2dp(18)} color="#000"/>
@@ -159,7 +159,7 @@ export default class Users extends Component {
                                 <Icon4 style={styles.iconChat} name="wechat" size={px2dp(15)} color="#fff"/>
                                 <TextComponent style={styles.textChat}>{Locales.Chat}</TextComponent>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.btnFollow, {backgroundColor: color}]} onPress={() => this._onUpdate()}>
+                            <TouchableOpacity style={[styles.btnFollow, {backgroundColor: color}]}>
                                 <Icon3 style={styles.iconFollow} name="rss" size={px2dp(15)} color="#fff"/>
                                 <TextComponent style={styles.textFollow}>{Locales.Follow}</TextComponent>
                             </TouchableOpacity>

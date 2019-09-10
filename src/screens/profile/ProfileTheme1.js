@@ -309,7 +309,7 @@ export default class ProfileTheme1 extends Component {
                                 <Icon5 style={styles.iconAddPost} name="add-circle-outline" size={px2dp(18)} color="#fff"/>
                                 <TextComponent style={styles.textAddPost}>{Locales.PostSale}</TextComponent>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.editPost, {backgroundColor: color}]} onPress={() => this._onUpdate()}>
+                            <TouchableOpacity style={[styles.editPost, {backgroundColor: color}]} onPress={() => navigate("EditPost")}>
                                 <Icon4 style={styles.iconEditPost} name="edit" size={px2dp(17)} color="#fff"/>
                                 <TextComponent style={styles.textEditPost}>{Locales.EditPost}</TextComponent>
                             </TouchableOpacity>

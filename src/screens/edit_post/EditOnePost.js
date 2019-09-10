@@ -45,7 +45,7 @@ import {
     setWidth,
     getValueByIDPicker,
     getIDByValuePicker,
-    getValueValidityPicker, getDataOfflineMode, validateText
+    getValueValidityPicker, getDataOfflineMode, validateText, setHeight
 } from "../../cores/viewComponents/baseFunctions/BaseFunctions";
 import {firebaseApp} from '../../components/firebase/Realtimedb';
 import RNPickerSelect from 'react-native-picker-select';
@@ -54,9 +54,9 @@ import RNFetchBlob from 'rn-fetch-blob';
 import {Item} from 'native-base';
 import DropdownComponent from "../../cores/viewComponents/dropdown/DropdownComponent";
 import {NavigationActions, StackActions} from "react-navigation";
-import {styles} from './styles/StyleSell';
 import constants from "../../assets/constants";
 import global from "../../cores/utils/global";
+import {large_bold, small, small2_bold} from "../../cores/styles/styleText";
 
 const deviceW = Dimensions.get("window").width;
 
@@ -192,7 +192,7 @@ const huong = [
     },
 ];
 
-export default class Sell extends Component {
+export default class EditOnePost extends Component {
 
     constructor(props) {
 
@@ -223,25 +223,11 @@ export default class Sell extends Component {
             currentUser: [],
             bg: colors.blue,
 
-            // value : "Chọn tỉnh thành",
-            // tinhthanh: [
-            //   {city: 'TP Hồ Chí Minh',},
-            //   {city: 'Hà Nội',},
-            //   {city: 'Cần Thơ',},
-            //   {city: 'Đà Nẵng',},
-            //   {city: 'Nha Trang',},
-            //   {city: 'Huế',},
-            // ],
         };
 
         thisState = this;
     }
 
-    // onSelect(value, label) {
-    //     this.setState({
-    //         value: value,
-    //     });
-    // }
 
     onLocation = data => {
         this.setState({data},()=>{
@@ -261,16 +247,16 @@ export default class Sell extends Component {
                 .then((responseJson) => {
                     this.setState({
                         isLoading: false,
-            dataSource: responseJson,
-            formatted_address:responseJson.results[0].formatted_address
-            }, function () {
-                console.log('location: '+ responseJson);
-                // In this block you can do something with new state.
-            });
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+                        dataSource: responseJson,
+                        formatted_address:responseJson.results[0].formatted_address
+                    }, function () {
+                        console.log('location: '+ responseJson);
+                        // In this block you can do something with new state.
+                    });
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
         });
     };
 
@@ -291,6 +277,31 @@ export default class Sell extends Component {
                     global.colors = this.state.bg
             )
         }
+
+
+        const {navigation} = this.props;
+        const item = this.props.navigation.state.params.item;
+        this.setState({
+            image_uri: item.image,
+            validity: item.validity,
+            validity2: item.validity2,
+            validity3: item.validity3,
+            name: item.name,
+            owner: item.owner,
+            price: item.price,
+            sqm: item.sqm,
+            year: item.year,
+            description: item.description,
+            detail: item.detail,
+            email: item.email,
+            displayName: item.displayName,
+            photoURL: item.photoURL,
+            phoneNumber: item.phoneNumber,
+            address: item.address,
+            latitude_data: item.latitude_data,
+            longitude_data: item.longitude_data,
+            formatted_address: item.formatted_address,
+        });
 
 
         const user = firebaseApp.auth().currentUser;
@@ -314,16 +325,18 @@ export default class Sell extends Component {
     }
 
     _onPost() {
+
         if (this.state.name.trim() === '' || this.state.owner.trim() === '' || this.state.price.trim() === '' ||
             this.state.sqm.trim() === '' || this.state.year.trim() === '' || this.state.description.trim() === '' ||
             this.state.detail.trim() === '') {
             Alert.alert('Error !!!', 'Please enter Text Content');
             return
         }
+        const item = this.props.navigation.state.params.item;
         const user = firebaseApp.auth().currentUser;
         //console.log("wwwwwww: " + JSON.stringify(this.state.currentUser));
         //console.log("kkkkkkk: " + JSON.stringify(this.state.currentUser.displayName));
-        firebaseApp.database().ref('data').child('sell').child(user.uid).push({
+        firebaseApp.database().ref('data').child('sell').child(item.id).update({
             name: this.state.name,
             owner: this.state.owner,
             price: this.state.price,
@@ -484,10 +497,6 @@ export default class Sell extends Component {
         console.log('Key_huong: ' + key)
     }
 
-    _onUpdate(){
-        Alert.alert("Function is updating");
-    }
-
     render() {
         console.log('formatted_address: ' + this.state.formatted_address);
         const {navigate} = this.props.navigation;
@@ -507,7 +516,7 @@ export default class Sell extends Component {
                 <View style={styles.header}>
                     <Icon3 onPress={() => navigation.goBack()} style={styles.iconLeft} name="chevron-left" size={px2dp(30)}/>
                     <Text style={styles.titleHeader}>{Locales.Postsaleofrealestate}</Text>
-                    <Icon onPress={() => this._onUpdate()} style={styles.iconSearch} name="search" size={px2dp(30)}/>
+                    <Icon style={styles.iconSearch} name="search" size={px2dp(30)}/>
                 </View>
                 <KeyboardAwareScrollView style={styles.keyboardView}>
                     <View style={styles.body}>
@@ -661,7 +670,7 @@ export default class Sell extends Component {
                             {/*{console.log("latitude_data: " + this.state.latitude_data)}*/}
                             <View style={styles.content}>
                                 <View style={styles.latitude}>
-                                    <Text numberOfLines={2} style={styles.textLatitude}>{this.state.formatted_address}</Text>
+                                    <Text numberOfLines={2} value={this.state.formatted_address} style={styles.textLatitude}>{this.state.formatted_address}</Text>
                                 </View>
                             </View>
                             {/*<TouchableOpacity style={styles.btnLocation} onPress={() => navigate('SetMap', {onLocation: this.onLocation })}>*/}
@@ -686,218 +695,212 @@ export default class Sell extends Component {
     }
 }
 
-// const styles = EStyleSheet.create({
-//     container: {
-//         flex: 1,
-//         alignItems: "center",
-//         backgroundColor: "$background"
-//     },
-//     keyboardView: {
-//         width: "100%",
-//         height: "100%"
-//     },
-//     fake: {
-//         width: "100%",
-//         height: "100%",
-//         justifyContent: "center",
-//         alignItems: "center"
-//     },
-//     header: {
-//         height: 70,
-//         backgroundColor: "$header",
-//         justifyContent: "space-between",
-//         alignItems: "center",
-//         flexDirection: 'row',
-//         width: "100%",
-//         paddingLeft: 10,
-//         paddingRight: 10,
-//     },
-//     iconLeft: {
-//         marginTop: 20,
-//         color: "#fff",
-//         marginLeft: 5,
-//     },
-//     titleHeader: {
-//         color: "white",
-//         textAlign: "center",
-//         fontWeight: "bold",
-//         fontSize: 20,
-//         marginTop: 20,
-//     },
-//     iconSearch: {
-//         marginTop: 20,
-//         color: "#fff",
-//         marginRight: 5,
-//     },
-//     title: {
-//         color: "$textColor",
-//         textAlign: "center",
-//         fontWeight: "bold",
-//         fontSize: 16,
-//         marginTop: 10,
-//     },
-//     avatar: {
-//         width: '85%',
-//         height: 200,
-//         backgroundColor: "#fff",
-//         borderWidth: 1,
-//         borderColor: colors.lightGrey,
-//         justifyContent: "center",
-//         alignItems: "center",
-//         marginTop: 20,
-//         borderRadius: 5,
-//     },
-//     imageAvatar: {
-//         width: "100%",
-//         height: 200,
-//         borderRadius: 5,
-//     },
-//     btnSelectImage: {
-//         width: "85%",
-//         height: 40,
-//         alignItems: "center",
-//         marginTop: 20,
-//         marginBottom: 20,
-//     },
-//     selectImage: {
-//         width: "100%",
-//         height: 40,
-//         backgroundColor: "orange",
-//         alignItems: "center",
-//         justifyContent: "center",
-//         borderRadius: 5,
-//     },
-//     textSelectImage: {
-//         fontSize: 16,
-//         fontWeight: "bold",
-//         color: "#fff"
-//     },
-//     information: {
-//         width: "85%",
-//         marginTop: 20,
-//         justifyContent: "center",
-//         alignItems: "center",
-//     },
-//     dropdown: {
-//         marginBottom: 20,
-//     },
-//     // viewSelect: {
-//     //   width: 335,
-//     //   height: 45,
-//     //   justifyContent: "center",
-//     //   alignItems: "center",
-//     //   borderRadius: 5,
-//     //   borderWidth: 0.5,
-//     //   borderColor: "black",
-//     //   marginBottom: 20,
-//     //   backgroundColor: '#fff'
-//     // },
-//     // option: {
-//     //   justifyContent: "center",
-//     //   alignItems: "center",
-//     // },
-//     // textOption: {
-//     //   fontSize: 16,
-//     //   textAlign: "center",
-//     //   fontWeight: 'bold'
-//     // },
-//     content: {
-//         width: "100%",
-//         height: 45,
-//         marginBottom: 20,
-//         borderRadius: 5,
-//         borderWidth: 1,
-//         borderColor: colors.lightGrey,
-//         backgroundColor: '#fff',
-//         justifyContent: "center",
-//     },
-//     textInput: {
-//         fontSize: 16,
-//         paddingLeft: 10,
-//         paddingRight: 10
-//     },
-//     content2: {
-//         width: "100%",
-//         height: 80,
-//         marginBottom: 20,
-//         borderRadius: 5,
-//         borderWidth: 1,
-//         borderColor: colors.lightGrey,
-//         backgroundColor: '#fff'
-//     },
-//     textInput2: {
-//         paddingLeft: 10,
-//         paddingRight: 10,
-//         color: 'black',
-//         fontSize: 16,
-//         textAlignVertical: 'top'
-//     },
-//     content3: {
-//         width: "100%",
-//         height: 140,
-//         marginBottom: 20,
-//         borderRadius: 5,
-//         borderWidth: 1,
-//         borderColor: colors.lightGrey,
-//         backgroundColor: '#fff'
-//     },
-//     latitude: {
-//         width: "100%",
-//         justifyContent: "center",
-//     },
-//     textLatitude: {
-//         fontSize: 16,
-//         paddingLeft: 10,
-//         paddingRight: 10,
-//         color: 'black',
-//     },
-//     btnLocation: {
-//         width: "100%",
-//         height: 40,
-//         backgroundColor: "orange",
-//         alignItems: "center",
-//         justifyContent: "center",
-//         borderRadius: 5,
-//         marginBottom: 20,
-//     },
-//     textLocation: {
-//         fontSize: 16,
-//         fontWeight: "bold",
-//         color: "#fff"
-//     },
-//     btn: {
-//         width: "85%",
-//         height: 110,
-//         alignItems: "center",
-//         marginTop: 20,
-//         marginBottom: 20,
-//     },
-//     btnSignin: {
-//         width: "100%",
-//         height: 45,
-//         backgroundColor: "#0174DF",
-//         alignItems: "center",
-//         justifyContent: "center",
-//         borderRadius: 5,
-//         marginBottom: 15
-//     },
-//     textSignin: {
-//         fontSize: 16,
-//         fontWeight: "bold",
-//         color: "#fff"
-//     },
-//     btnCancel: {
-//         width: "100%",
-//         height: 45,
-//         backgroundColor: "#0174DF",
-//         alignItems: "center",
-//         justifyContent: "center",
-//         borderRadius: 5
-//     },
-//     textCancel: {
-//         fontSize: 16,
-//         fontWeight: "bold",
-//         color: "#fff"
-//     },
-// });
+const styles = EStyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: "center",
+        backgroundColor: "$background"
+    },
+    header: {
+        height: 70,
+        backgroundColor: "$header",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: 'row',
+        width: "100%",
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+    iconLeft: {
+        marginTop: 20,
+        color: colors.white,
+        marginLeft: 5,
+    },
+    titleHeader: {
+        color: colors.white,
+        textAlign: "center",
+        ...large_bold,
+        marginTop: 20,
+    },
+    iconSearch: {
+        marginTop: 20,
+        color: colors.white,
+        marginRight: 5,
+    },
+    keyboardView: {
+        width: setWidth("100%"),
+        height: setHeight("100%")
+    },
+    body: {
+        width: setWidth("100%"),
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    textTitle: {
+        color: "$textColor",
+        textAlign: "center",
+        ...small2_bold,
+        marginTop: 10,
+    },
+    viewImageBDS: {
+        width: setWidth('85%'),
+        height: 200,
+        backgroundColor: colors.white,
+        borderWidth: 1,
+        borderColor: colors.lightGrey,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 20,
+        borderRadius: 5,
+    },
+    imageBDS: {
+        width: "100%",
+        height: 200,
+        borderRadius: 5,
+    },
+    btnSelectImage: {
+        width: setWidth('85%'),
+        height: 40,
+        alignItems: "center",
+        marginTop: 20,
+        marginBottom: 20,
+    },
+    selectImage: {
+        width: "100%",
+        height: 40,
+        backgroundColor: colors.orange,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 5,
+    },
+    textSelectImage: {
+        ...small2_bold,
+        color: colors.white
+    },
+    information: {
+        width: setWidth('85%'),
+        marginTop: 20,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    dropdown: {
+        marginBottom: 20,
+    },
+    // viewSelect: {
+    //   width: 335,
+    //   height: 45,
+    //   justifyContent: "center",
+    //   alignItems: "center",
+    //   borderRadius: 5,
+    //   borderWidth: 0.5,
+    //   borderColor: "black",
+    //   marginBottom: 20,
+    //   backgroundColor: '#fff'
+    // },
+    // option: {
+    //   justifyContent: "center",
+    //   alignItems: "center",
+    // },
+    // textOption: {
+    //   fontSize: 16,
+    //   textAlign: "center",
+    //   fontWeight: 'bold'
+    // },
+    content: {
+        width: "100%",
+        height: 45,
+        marginBottom: 20,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: colors.lightGrey,
+        backgroundColor: colors.white,
+        justifyContent: "center",
+    },
+    textInput: {
+        ...small,
+        paddingLeft: 10,
+        paddingRight: 10
+    },
+    content2: {
+        width: "100%",
+        height: 80,
+        marginBottom: 20,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: colors.lightGrey,
+        backgroundColor: colors.white
+    },
+    textInput2: {
+        paddingLeft: 10,
+        paddingRight: 10,
+        color: colors.black,
+        ...small,
+        textAlignVertical: 'top'
+    },
+    content3: {
+        width: "100%",
+        height: 140,
+        marginBottom: 20,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: colors.lightGrey,
+        backgroundColor: colors.white
+    },
+    latitude: {
+        width: "100%",
+        justifyContent: "center",
+    },
+    textLatitude: {
+        ...small,
+        paddingLeft: 10,
+        paddingRight: 10,
+        color: colors.black,
+    },
+    btnLocation: {
+        width: "100%",
+        height: 40,
+        backgroundColor: colors.orange,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 5,
+        marginBottom: 20,
+    },
+    textLocation: {
+        ...small2_bold,
+        color: colors.white
+    },
+    btn: {
+        width: setWidth('85%'),
+        height: 110,
+        alignItems: "center",
+        marginTop: 20,
+        marginBottom: 20,
+    },
+    btnPost: {
+        width: "100%",
+        height: 45,
+        //backgroundColor: colors.button1,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 5,
+        marginBottom: 15
+    },
+    textPost: {
+        ...small2_bold,
+        color: colors.white
+    },
+    btnCancel: {
+        width: "100%",
+        height: 45,
+        //backgroundColor: colors.button1,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 5
+    },
+    textCancel: {
+        ...small2_bold,
+        color: colors.white
+    },
+});
 
