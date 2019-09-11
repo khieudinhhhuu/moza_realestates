@@ -96,6 +96,7 @@ export default class Users extends Component {
             )
         }
 
+
         let array = [];
         const item = this.props.navigation.state.params.item;
         console.log("item8888: " + JSON.stringify(item));
@@ -162,13 +163,47 @@ export default class Users extends Component {
             });
         });
 
+
+        const user = firebaseApp.auth().currentUser;
+        firebaseApp.database().ref('users').child('accounts').child(user.uid).child('followed').child(item.uid).on('value', function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+                const childData = childSnapshot.val();
+                childData.uid === item.uid ?
+                    thisState.setState({
+                        checkFollow: false,
+                        txtFollow: Locales.Follow,
+                        iconFollow: "rss",
+                    })
+                    :
+                    thisState.setState({
+                        checkFollow: true,
+                        txtFollow: "Followed",
+                        iconFollow: "rss-square",
+                    });
+                // if (childData.uid === item.uid) {
+                //     thisState.setState({
+                //         checkFollow: true,
+                //         txtFollow: "Followed",
+                //         iconFollow: "rss-square",
+                //     });
+                // } else {
+                //     thisState.setState({
+                //         checkFollow: false,
+                //         txtFollow: Locales.Follow,
+                //         iconFollow: "rss",
+                //     });
+                // }
+            });
+        });
+
+
     }
 
     onFollow(){
         const item = this.props.navigation.state.params.item;
-        if (this.state.checkFavourite === true) {
+        if (this.state.checkFollow === true) {
             this.setState({
-                checkFavourite: false,
+                checkFollow: false,
                 txtFollow: Locales.Follow,
                 iconFollow: "rss",
             });
@@ -176,9 +211,11 @@ export default class Users extends Component {
                 "Un" + Locales.Follow + " " + item.displayName,
                 ToastAndroid.LONG, ToastAndroid.BOTTOM, 25,100,
             );
+            this.unFollow();
+            this.minusFollow();
         } else {
             this.setState({
-                checkFavourite: true,
+                checkFollow: true,
                 txtFollow: "Followed",
                 iconFollow: "rss-square",
             });
@@ -186,18 +223,39 @@ export default class Users extends Component {
                 "Followed " + item.displayName,
                 ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 100,
             );
-            this.saveFollow();
+            this.Follow();
             this.plusFollow();
         }
     }
 
-    saveFollow(){
+    unFollow(){
         const item = this.props.navigation.state.params.item;
         const user = firebaseApp.auth().currentUser;
-        firebaseApp.database().ref('users').child('accounts').child(user.uid).child('followed').child(item.uid).update({
+        firebaseApp.database().ref('users').child('accounts').child(user.uid).child('followed').child(item.uid).remove();
+    }
+
+    minusFollow(){
+        const item = this.props.navigation.state.params.item;
+        firebaseApp.database().ref('users').child('accounts').child(this.state.followUser.uid).update({
+            follow: this.state.followUser.follow - 1,
+        });
+
+        firebaseApp.database().ref('data').child('sell').child(item.id).update({
+            follow: this.state.followUser.follow - 1,
+        });
+    }
+
+    Follow(){
+        const item = this.props.navigation.state.params.item;
+        const user = firebaseApp.auth().currentUser;
+        firebaseApp.database().ref('users').child('accounts').child(user.uid).child('followed').child(item.uid).set({
             uid: item.uid,
             displayName: item.displayName,
-            email: item.email
+            email: item.email,
+            address: item.addressUser,
+            phoneNumber: item.phoneNumber,
+            photoURL: item.photoURL,
+            follow: this.state.followUser.follow + 1,
         });
     }
 
@@ -210,7 +268,6 @@ export default class Users extends Component {
         firebaseApp.database().ref('data').child('sell').child(item.id).update({
             follow: item.follow + 1,
         });
-
     }
 
     render() {
