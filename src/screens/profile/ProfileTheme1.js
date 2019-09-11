@@ -69,8 +69,10 @@ export default class ProfileTheme1 extends Component {
         this.state = {
             data: [],
             data2: [],
+            data3: [],
             currentUser: '',
-            isLoading: false,
+            currentUserPost: "",
+            isLoading: true,
             photoURL: 'http://media2.sieuhai.tv:8088/onbox/images/user_lead_image/20190408/84947430634_20190408001343.jpg',
             bg: colors.blue,
         };
@@ -113,45 +115,68 @@ export default class ProfileTheme1 extends Component {
         }
 
 
+        // firebaseApp.database().ref('data').child('sell').on('value', snapshot => {
+        //     thisState.setState({
+        //         isLoading: false,
+        //         data: Object.values(snapshot.val()),
+        //     }, () => {
+        //         console.log("childSnapshot_post: " + JSON.stringify(Object.values(snapshot.val())));
+        //     });
+        // });
+
         let array = [];
-        firebaseApp.database().ref('data').child('bds').on('value', function (snapshot) {
+        const user = firebaseApp.auth().currentUser;
+        firebaseApp.database().ref('data').child('sell').on('value', snapshot => {
             snapshot.forEach(function (childSnapshot) {
                 let childData = childSnapshot.val();
-                array.push({
-                    id: childSnapshot.key,
-                    address: childData.address,
-                    avatar: childData.avatar,
-                    bathrooms: childData.bathrooms,
-                    bedrooms: childData.bedrooms,
-                    description: childData.description,
-                    detail: childData.detail,
-                    image: childData.image,
-                    kitchen: childData.kitchen,
-                    landmark: childData.landmark,
-                    latitude: childData.latitude,
-                    latitudeDelta: childData.latitudeDelta,
-                    link: childData.link,
-                    longitude: childData.longitude,
-                    longitudeDelta: childData.longitudeDelta,
-                    name: childData.name,
-                    owner: childData.owner,
-                    parkings: childData.parkings,
-                    price: childData.price,
-                    rate: childData.rate,
-                    sqm: childData.sqm,
-                    status: childData.status,
-                    type: childData.type,
-                    year: childData.year,
-                    checkFavourite: childData.checkFavourite,
-                });
+                //console.log("childData_post: " + JSON.stringify(childData));
+                if (childData.uid === user.uid) {
+                    // thisState.setState({
+                    //     isLoading: false,
+                    //     currentUserPost: childData,
+                    // },() => {
+                    //     console.log("currentUserPost: " + JSON.stringify(childData));
+                    //     console.log("currentUserPost_uid: " + childData.uid);
+                    // });
+                    array.push({
+                        id: childSnapshot.key,
+                        image: childData.image,
+                        address: childData.address,
+                        type: childData.type,
+                        direction: childData.direction,
+                        latitude: childData.latitude,
+                        longitude: childData.longitude,
+                        location: childData.location,
+                        name: childData.name,
+                        owner: childData.owner,
+                        price: childData.price,
+                        sqm: childData.sqm,
+                        year: childData.year,
+                        description: childData.description,
+                        detail: childData.detail,
+                        email: childData.email,
+                        displayName: childData.displayName,
+                        photoURL: childData.photoURL,
+                        phoneNumber: childData.phoneNumber,
+                        addressUser: childData.addressUser,
+                        follow: childData.follow,
+                        checkFavourite: childData.checkFavourite,
+                        uid: childData.uid,
+                    });
+                    thisState.setState({
+                        isLoading: false,
+                        data: array,
+                    }, function () {
+                        console.log("data_libaba: " + JSON.stringify(this.state.data));
+                    });
+                }
             });
             thisState.setState({
-                    data: array,
-                }, function () {
-                    console.log("data: " + this.state.data)
-                }
-            );
-
+                isLoading: false,
+                data3: this.state.data,
+            }, function () {
+                console.log("data3: " + JSON.stringify(this.state.data3));
+            });
         });
 
 
@@ -191,21 +216,20 @@ export default class ProfileTheme1 extends Component {
 
     }
 
-
     getProfile() {
         //let array2 = [];
         //vì user này k đổi nên sẽ dùng const
         const user = firebaseApp.auth().currentUser;
-        console.log("user: " + JSON.stringify(user));
+        //console.log("user: " + JSON.stringify(user));
         // firebaseApp.database().ref('users').child('accounts').child(user.uid).on('value', function (snapshot) {
         firebaseApp.database().ref('users').child('accounts').on('value', function (snapshot) {
-            console.log("snapshot: " + JSON.stringify(snapshot));
+            //console.log("snapshot: " + JSON.stringify(snapshot));
             //đây là hàm để lặp toàn bộ object trong mảng accounts
             snapshot.forEach(function (childSnapshot) {
                 const childData = childSnapshot.val();
                 if (childData.uid === user.uid) {
                     thisState.setState({
-                        isLoading: true,
+                        isLoading: false,
                         currentUser: childData,
                     }, () => {
                         console.log("currentUser: " + JSON.stringify(childData));
@@ -236,10 +260,6 @@ export default class ProfileTheme1 extends Component {
             // console.log("array2_displayName: " + array2[0].displayName);
         });
 
-    }
-
-    _onUpdate(){
-        Alert.alert("Function is updating");
     }
 
     render() {
@@ -285,14 +305,14 @@ export default class ProfileTheme1 extends Component {
                                    source={{uri: this.state.currentUser.photoURL}}/>
                         </View>
                         <View style={styles.name}>
-                            {console.log("xxxxxxxx: " + JSON.stringify(this.state.currentUser))}
+                            {/*{console.log("xxxxxxxx: " + JSON.stringify(this.state.currentUser))}*/}
                             <TextComponent style={styles.textName}>{this.state.currentUser.displayName}</TextComponent>
                             <TextComponent style={styles.textEmail}>Email: {this.state.currentUser.email}</TextComponent>
                         </View>
                         <View style={styles.follows}>
                             <Icon8 style={styles.iconFollows} name="rss" size={px2dp(18)} color="#000"/>
                             <TextComponent style={styles.textFollows}>{Locales.Followedby}</TextComponent>
-                            <TextComponent style={styles.numberFollows}>137 {Locales.people}</TextComponent>
+                            <TextComponent style={styles.numberFollows}>{this.state.currentUser.follow} {Locales.people}</TextComponent>
                         </View>
                         <TouchableOpacity style={styles.editUser} onPress={() => navigate("EditAccount",
                             {photoURL: this.state.currentUser.photoURL,
@@ -321,31 +341,17 @@ export default class ProfileTheme1 extends Component {
                         </View>
                         <View style={styles.FlatList1}>
                             <FlatList
-                                data={this.state.data}
+                                data={this.state.data3}
                                 renderItem={({item}) => (
                                     <TouchableOpacity style={styles.item} onPress={() => navigate('Details',{item: item})}>
                                         <FastImage
                                             style={styles.imageItemTwo}
                                             source={{uri: item.image}}
                                         >
-                                            <View style={[styles.status, {backgroundColor: color}]}>
-                                                <TextComponent style={styles.textStatus}>
-                                                    {item.status}
-                                                </TextComponent>
-                                            </View>
                                         </FastImage>
                                         <View style={styles.partBottom}>
-                                            <View style={styles.content2}>
-                                                <Rating
-                                                    ratingCount={5}
-                                                    imageSize={15}
-                                                    style={styles.rating}
-                                                />
-                                            </View>
                                             <View style={styles.viewTitle}>
-                                                <TextComponent style={styles.title}>
-                                                    {item.name}
-                                                </TextComponent>
+                                                <TextComponent style={styles.title}>{item.name}</TextComponent>
                                             </View>
                                             <View style={styles.content4}>
                                                 <View style={styles.viewAddress}>
@@ -382,7 +388,7 @@ export default class ProfileTheme1 extends Component {
                         <View style={styles.iconLeft}/>
                         {/*<Icon4 onPress={() => navigate('Menu')} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>*/}
                         <TextComponent style={styles.titleHeader}>{Locales.Profile}</TextComponent>
-                        <Icon onPress={() => this._onUpdate()} style={styles.iconBell} name="bell" size={px2dp(30)} color="#fff"/>
+                        <Icon style={styles.iconBell} name="bell" size={px2dp(30)} color="#fff"/>
                     </View>
 
                 </Animated.View>

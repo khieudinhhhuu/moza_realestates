@@ -104,6 +104,7 @@ export default class Signup extends Component {
                         phoneNumber: this.state.phoneNumber,
                         email: this.state.email,
                         password: this.state.password,
+                        follow: 0,
                         uid: this.id,
                     });
                 Alert.alert(

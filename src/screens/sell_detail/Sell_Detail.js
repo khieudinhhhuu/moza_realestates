@@ -97,10 +97,6 @@ export default class Sell_Detail extends Component {
 
     }
 
-    _onUpdate(){
-        Alert.alert("Function is updating");
-    }
-
     render() {
         const {navigate} = this.props.navigation;
         const {navigation} = this.props;
@@ -118,7 +114,7 @@ export default class Sell_Detail extends Component {
                 <View style={styles.header}>
                     <Icon4 onPress={() => navigation.goBack()} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>
                     <TextComponent style={styles.titleHeader}>{Locales.RealEstateDetails}</TextComponent>
-                    <Icon onPress={() => this._onUpdate()} style={styles.iconSearch} name="search" size={px2dp(30)} />
+                    <Icon style={styles.iconSearch} name="search" size={px2dp(30)} />
                 </View>
                 <KeyboardAwareScrollView style={styles.keyboardView}>
                     <View style={styles.body}>
@@ -219,7 +215,7 @@ export default class Sell_Detail extends Component {
                         <Icon6 style={styles.iconChat} name="chat" size={px2dp(15)} color="#fff"/>
                         <TextComponent style={styles.textChat}>{Locales.Ask}</TextComponent>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.btnCare, {backgroundColor: color}]} onPress={() => this._onUpdate()}>
+                    <TouchableOpacity style={[styles.btnCare, {backgroundColor: color}]}>
                         <Icon7 style={styles.iconCare} name="stack-overflow" size={px2dp(15)} color="#fff"/>
                         <TextComponent style={styles.textCare}>{Locales.Care}</TextComponent>
                     </TouchableOpacity>

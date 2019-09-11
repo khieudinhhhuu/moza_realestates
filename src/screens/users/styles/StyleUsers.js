@@ -134,7 +134,7 @@ export const styles = EStyleSheet.create({
         fontWeight: "bold",
     },
     btn: {
-        width: setWidth("90%"),
+        width: setWidth("95%"),
         height: 40,
         justifyContent: "space-between",
         alignItems: "center",
@@ -190,9 +190,9 @@ export const styles = EStyleSheet.create({
         color: colors.white,
     },
     recentlyView: {
-        width: setWidth("90%"),
+        width: setWidth("95%"),
         alignItems: "flex-start",
-        marginTop: 30,
+        marginTop: 20,
         marginBottom: 10
     },
     textRecentlyView: {
@@ -200,27 +200,29 @@ export const styles = EStyleSheet.create({
         color: "$textColor"
     },
     FlatList1: {
-        width: setWidth("90%"),
+        width: setWidth("98%"),
+        marginHorizontal: 5,
     },
     item: {
-        width: 167,
-        marginRight: 18,
-        backgroundColor: colors.white,
-        marginTop: 10,
-        marginBottom: 15,
+        flex: 1,
+        justifyContent: "flex-start",
+        alignItems: "center",
+        backgroundColor: "$bg2",
+        margin: 5,
         borderRadius: 5
     },
     imageItem: {
         width: "100%",
         height: 150,
-        borderRadius: 3,
+        borderTopLeftRadius: 3,
+        borderTopRightRadius: 3,
         flexDirection: "row",
         justifyContent: "space-between"
     },
     partBottom: {
         width: "100%",
-        paddingLeft: 10,
-        paddingRight: 15,
+        paddingLeft: 8,
+        paddingRight: 8,
         justifyContent: "space-between"
     },
     viewTitle: {
@@ -236,16 +238,18 @@ export const styles = EStyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         flexDirection: "row",
-        marginTop: 7
+        marginTop: 3
     },
     viewAddress: {
         width: "50%",
-        alignItems: "center",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
         flexDirection: "row",
-        marginRight: 7
+        paddingRight: 7,
     },
     iconEnviromento: {
         marginRight: 2,
+        marginTop: 1,
     },
     textCity: {
         ...mini,
@@ -254,7 +258,8 @@ export const styles = EStyleSheet.create({
     viewSqm: {
         width: "50%",
         alignItems: "center",
-        flexDirection: "row"
+        justifyContent: "flex-end",
+        flexDirection: "row",
     },
     iconHome: {
         marginRight: 2
@@ -273,7 +278,7 @@ export const styles = EStyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         marginBottom: 10,
-        marginTop: 5
+        marginTop: 4
     },
     textCurrency: {
         ...mini2_bold,

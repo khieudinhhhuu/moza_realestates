@@ -293,14 +293,9 @@ export default class EditOnePost extends Component {
             year: item.year,
             description: item.description,
             detail: item.detail,
-            email: item.email,
-            displayName: item.displayName,
-            photoURL: item.photoURL,
-            phoneNumber: item.phoneNumber,
-            address: item.address,
-            latitude_data: item.latitude_data,
-            longitude_data: item.longitude_data,
-            formatted_address: item.formatted_address,
+            latitude_data: item.latitude,
+            longitude_data: item.longitude,
+            formatted_address: item.location,
         });
 
 
@@ -333,7 +328,6 @@ export default class EditOnePost extends Component {
             return
         }
         const item = this.props.navigation.state.params.item;
-        const user = firebaseApp.auth().currentUser;
         //console.log("wwwwwww: " + JSON.stringify(this.state.currentUser));
         //console.log("kkkkkkk: " + JSON.stringify(this.state.currentUser.displayName));
         firebaseApp.database().ref('data').child('sell').child(item.id).update({
@@ -356,7 +350,9 @@ export default class EditOnePost extends Component {
             photoURL: this.state.currentUser.photoURL,
             phoneNumber: this.state.currentUser.phoneNumber,
             addressUser: this.state.currentUser.address,
-            checkFavourite: false,
+            follow: item.follow,
+            checkFavourite: item.checkFavourite,
+            uid: item.uid,
         });
 
         //this.props.navigation.navigate('Menu');
@@ -670,7 +666,7 @@ export default class EditOnePost extends Component {
                             {/*{console.log("latitude_data: " + this.state.latitude_data)}*/}
                             <View style={styles.content}>
                                 <View style={styles.latitude}>
-                                    <Text numberOfLines={2} value={this.state.formatted_address} style={styles.textLatitude}>{this.state.formatted_address}</Text>
+                                    <Text numberOfLines={2} style={styles.textLatitude}>{this.state.formatted_address}</Text>
                                 </View>
                             </View>
                             {/*<TouchableOpacity style={styles.btnLocation} onPress={() => navigate('SetMap', {onLocation: this.onLocation })}>*/}

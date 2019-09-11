@@ -21,7 +21,7 @@ import {
     AppRegistry,
     Modal,
     Switch,
-    ActivityIndicator
+    ActivityIndicator, Linking,
 } from "react-native";
 import {createDrawerNavigator, createStackNavigator, createAppContainer} from "react-navigation";
 import Icon from "react-native-vector-icons/EvilIcons";
@@ -47,6 +47,12 @@ import {
 import constants from "../../assets/constants";
 import global from "../../cores/utils/global";
 import {large_bold, medium, medium_bold, mini, mini2, small_bold} from "../../cores/styles/styleText";
+import {NavigationActions, StackActions} from "react-navigation";
+
+const resetAction = StackActions.reset({
+    index: 0,
+    actions: [NavigationActions.navigate({routeName: 'EditPost'})],
+});
 
 const deviceW = Dimensions.get("window").width;
 
@@ -56,10 +62,6 @@ function px2dp(px) {
     return (px * deviceW) / basePx;
 }
 
-const Header_Maximum_Height = 70;
-
-const Header_Minimum_Height = 70;
-
 export default class EditPost extends Component {
 
     constructor(props) {
@@ -68,16 +70,13 @@ export default class EditPost extends Component {
         this.state = {
             isLoading: true,
             data: [],
-            dataSource: [],
+            data2: [],
             check: false,
             search: '',
             bg: colors.blue,
         };
 
         thisState = this;
-        this.arrayholder = [];
-
-        this.AnimatedHeaderValue = new Animated.Value(0);
     }
 
     async componentDidMount() {
@@ -98,68 +97,92 @@ export default class EditPost extends Component {
             )
         }
 
+        this.listenForItems(firebaseApp.database());
 
+    }
+
+    listenForItems() {
         let array = [];
+        const user = firebaseApp.auth().currentUser;
         firebaseApp.database().ref('data').child('sell').on('value', function (snapshot) {
             snapshot.forEach(function (childSnapshot) {
                 let childData = childSnapshot.val();
-                array.push({
-                    id: childSnapshot.key,
-                    image: childData.image,
-                    address: childData.address,
-                    type: childData.type,
-                    direction: childData.direction,
-                    latitude: childData.latitude,
-                    longitude: childData.longitude,
-                    location: childData.location,
-                    name: childData.name,
-                    owner: childData.owner,
-                    price: childData.price,
-                    sqm: childData.sqm,
-                    year: childData.year,
-                    description: childData.description,
-                    detail: childData.detail,
-                    email: childData.email,
-                    displayName: childData.displayName,
-                    photoURL: childData.photoURL,
-                    phoneNumber: childData.phoneNumber,
-                    addressUser: childData.addressUser,
-                });
-
-            });
-            thisState.setState(
-                {
-                    data: array,
-                    dataSource2: array,
-                    isLoading: false,
-                },
-                function () {
-                    this.arrayholder = array;
+                if (childData.uid === user.uid) {
+                    array.push({
+                        id: childSnapshot.key,
+                        image: childData.image,
+                        address: childData.address,
+                        type: childData.type,
+                        direction: childData.direction,
+                        latitude: childData.latitude,
+                        longitude: childData.longitude,
+                        location: childData.location,
+                        name: childData.name,
+                        owner: childData.owner,
+                        price: childData.price,
+                        sqm: childData.sqm,
+                        year: childData.year,
+                        description: childData.description,
+                        detail: childData.detail,
+                        email: childData.email,
+                        displayName: childData.displayName,
+                        photoURL: childData.photoURL,
+                        phoneNumber: childData.phoneNumber,
+                        addressUser: childData.addressUser,
+                        follow: childData.follow,
+                        checkFavourite: childData.checkFavourite,
+                        uid: childData.uid,
+                    });
+                    thisState.setState({
+                        data: array,
+                        isLoading: false,
+                    });
                 }
-            );
+            });
+            thisState.setState({
+                data2: thisState.state.data,
+                isLoading: false,
+            }, function () {
+                console.log("data2: " + JSON.stringify(this.state.data2));
+            });
+        });
+
+        firebaseApp.database().ref('data').child('sell').on('child_removed', (snapshot) => {
+            array = array.filter((x) => x.id !== snapshot.key);
+            thisState.setState({
+                data2: array,
+                isLoading: false,
+            });
         });
 
     }
 
+    deletePost(item) {
+        Alert.alert(
+            'Delete Post ',
+            'Do you want to delete post !',
+            [
+                {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel'
+                },
+                {text: 'OK', onPress: () => this.delete(item)},
+            ],
+            {cancelable: false}
+        );
+    };
 
-    SearchFilterFunction(text) {
-        //passing the inserted text in textinput
-        const newData = this.arrayholder.filter(function (item) {
-            //applying filter for the inserted text in search bar
-            const itemData = item.name ? item.name.toUpperCase() : ''.toUpperCase();
-            const textData = text.toUpperCase();
-            return itemData.indexOf(textData) > -1;
-        });
-        this.setState({
-            //setting the filtered newData on datasource
-            //After setting the data it will automatically re-render the view
-            data: newData,
-            search: text,
-        });
+    delete(item) {
+        firebaseApp.database().ref('data').child('sell').child(item.id).remove();
+        this.listenForItems(firebaseApp.database());
+        this.props.navigation.dispatch(resetAction)
     }
 
     render() {
         const color = this.state.bg;
+        const {navigate} = this.props.navigation;
+        const {navigation} = this.props;
         if (this.state.isLoading) {
             return (
                 <View style={styles.container}>
@@ -169,49 +192,16 @@ export default class EditPost extends Component {
                         backgroundColor="transparent"
                         translucent
                     />
-                    <ImageBackground style={styles.imageBackground} source={require("../../assets/image/villa01.jpg")}>
-                        <View style={styles.header}>
-                            <Icon style={styles.iconLeft} name="navicon" size={px2dp(34)}/>
-                            <TextComponent style={styles.titleHeader}>{Locales.Home}</TextComponent>
-                            <Icon style={styles.iconBell} name="bell" size={px2dp(31)}/>
-                        </View>
-                        <View style={styles.searchBar}>
-                            <TextInput style={styles.textInputSearch}
-                                       placeholder={Locales.SearchHome}
-                                       keyboardType="default"
-                                       returnKeyType="go"
-                                // placeholderTextColor="#666"
-                                       onChangeText={text => this.SearchFilterFunction(text)}
-                                       onClear={text => this.SearchFilterFunction('')}
-                                       value={this.state.search}/>
-                            <Icon style={styles.icon3} name="search" size={px2dp(26)} color="#666"/>
-                        </View>
-                    </ImageBackground>
-                    <View style={styles.information}>
-                        <TextComponent style={styles.textInformation}>{this.state.textInformation}</TextComponent>
+                    <View style={styles.header}>
+                        <Icon4 onPress={() => navigation.goBack()} style={styles.iconLeft} name="arrowleft"
+                               size={px2dp(28)}/>
+                        <TextComponent style={styles.titleHeader}>Edit Post</TextComponent>
+                        <Icon style={styles.iconBell} name="bell" size={px2dp(30)}/>
                     </View>
                     <ActivityIndicator size="large"/>
                 </View>
             );
         }
-        // console.log("data: " + JSON.stringify(this.state.checkData));
-        const {navigate} = this.props.navigation;
-        const AnimateHeaderBackgroundColor = this.AnimatedHeaderValue.interpolate(
-            {
-                inputRange: [ 0, ( Header_Maximum_Height - Header_Minimum_Height )  ],
-
-                outputRange: [ 'transparent' , this.state.bg ],
-
-                extrapolate: 'clamp'
-            });
-        const AnimateHeaderHeight = this.AnimatedHeaderValue.interpolate(
-            {
-                inputRange: [ 0, ( Header_Maximum_Height - Header_Minimum_Height ) ],
-
-                outputRange: [ Header_Maximum_Height, Header_Minimum_Height ],
-
-                extrapolate: 'clamp'
-            });
         return (
             <View style={styles.container}>
                 <StatusBar
@@ -220,32 +210,19 @@ export default class EditPost extends Component {
                     backgroundColor="transparent"
                     translucent
                 />
-                <KeyboardAwareScrollView
-                    style={styles.keyboardView}
-                    scrollEventThrottle = { 16 }
-                    onScroll = { Animated.event(
-                        [{ nativeEvent: { contentOffset: { y: this.AnimatedHeaderValue }}}]
-                    )}
-                >
+                <View style={styles.header}>
+                    <Icon4 onPress={() => navigation.goBack()} style={styles.iconLeft} name="arrowleft"
+                           size={px2dp(28)}/>
+                    <TextComponent style={styles.titleHeader}>Edit Post</TextComponent>
+                    <Icon style={styles.iconBell} name="bell" size={px2dp(30)}/>
+                </View>
+                <KeyboardAwareScrollView style={styles.keyboardView}>
                     <View style={styles.body}>
-                        <ImageBackground style={styles.imageBackground} source={require("../../assets/image/villa01.jpg")}>
-                            <View style={styles.searchBar}>
-                                <TextInput style={styles.textInputSearch}
-                                           placeholder={Locales.SearchHome}
-                                           keyboardType="default"
-                                           returnKeyType="go"
-                                    // placeholderTextColor="#666"
-                                           onChangeText={text => this.SearchFilterFunction(text)}
-                                           onClear={text => this.SearchFilterFunction('')}
-                                           value={this.state.search}/>
-                                <Icon style={styles.icon3} name="search" size={px2dp(26)} color="#666"/>
-                            </View>
-                        </ImageBackground>
                         <View style={styles.FlatList1}>
                             <FlatList
-                                data={this.state.data}
+                                data={this.state.data2}
                                 renderItem={({item}) => (
-                                    <TouchableOpacity style={styles.item} onPress={() => navigate('EditOnePost', {item: item})}>
+                                    <View style={styles.item}>
                                         <Image style={styles.imageItem}
                                                source={typeof item.image === "string"
                                                    ? {uri: item.image} : item.image}
@@ -276,11 +253,27 @@ export default class EditPost extends Component {
                                                 </View>
                                             </View>
                                             <View style={styles.Price}>
-                                                <TextComponent style={[styles.textCurrency, {color: color }]}>$</TextComponent>
-                                                <TextComponent style={[styles.textMoney, {color: color}]}>{item.price}</TextComponent>
+                                                <TextComponent
+                                                    style={[styles.textCurrency, {color: color}]}>$</TextComponent>
+                                                <TextComponent
+                                                    style={[styles.textMoney, {color: color}]}>{item.price}</TextComponent>
                                             </View>
                                         </View>
-                                    </TouchableOpacity>
+                                        <View style={styles.buttonFunction}>
+                                            <TouchableOpacity style={[styles.btnEdit, {backgroundColor: color}]}
+                                                              onPress={() => navigate("EditOnePost", {item: item})}>
+                                                <Icon4 style={styles.iconEdit} name="edit" size={px2dp(15)}
+                                                       color="#fff"/>
+                                                <TextComponent style={styles.textEdit}>Edit</TextComponent>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity style={[styles.btnDelete, {backgroundColor: color}]}
+                                                              onPress={() => this.deletePost(item)}>
+                                                <Icon4 style={styles.iconDelete} name="delete" size={px2dp(15)}
+                                                       color="#fff"/>
+                                                <TextComponent style={styles.textDelete}>Delete</TextComponent>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
                                 )}
                                 keyExtractor={(item, index) => item.id}
                                 numColumns={2}
@@ -288,14 +281,6 @@ export default class EditPost extends Component {
                         </View>
                     </View>
                 </KeyboardAwareScrollView>
-
-                <Animated.View style = {[ styles.HeaderStyle, { height: AnimateHeaderHeight, backgroundColor: AnimateHeaderBackgroundColor } ]}>
-                    <View style={styles.header}>
-                        <Icon onPress={() => this._onUpdate()} style={styles.iconLeft} name="navicon" size={px2dp(34)}/>
-                        <TextComponent style={styles.titleHeader}>{Locales.Home}</TextComponent>
-                        <Icon onPress={() => this._onUpdate()} style={styles.iconBell} name="bell" size={px2dp(31)}/>
-                    </View>
-                </Animated.View>
 
             </View>
         );
@@ -309,24 +294,15 @@ const styles = EStyleSheet.create({
         backgroundColor: "$background",
         paddingTop: (Platform.OS === 'ios') ? 20 : 0
     },
-    HeaderStyle: {
-        //justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: (Platform.OS === 'ios') ? 20 : 0,
-    },
     header: {
         width: setWidth("100%"),
         height: 70,
-        //backgroundColor: "$header",
+        backgroundColor: "$header",
         justifyContent: "space-between",
         alignItems: "center",
         flexDirection: 'row',
-        paddingLeft: 5,
-        paddingRight: 5,
-        marginBottom: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
     },
     iconLeft: {
         marginTop: 20,
@@ -350,34 +326,8 @@ const styles = EStyleSheet.create({
         width: setWidth("100%"),
         height: "100%",
         justifyContent: "center",
-        alignItems: "center"
-    },
-    imageBackground: {
-        width: "100%",
-        height: 290,
-        alignItems: "center"
-    },
-    searchBar: {
-        width: setWidth("94%"),
-        height: 45,
-        backgroundColor: colors.white,
-        justifyContent: "space-between",
         alignItems: "center",
-        flexDirection: "row",
-        borderRadius: 5,
-        marginTop: 75,
-        position: 'absolute',
-    },
-    textInputSearch: {
-        width: "83%",
-        height: "100%",
-        backgroundColor: colors.white,
-        padding: 5,
-        ...medium,
-        marginLeft: 15
-    },
-    icon3: {
-        marginRight: 15
+        paddingTop: 10,
     },
     FlatList1: {
         width: setWidth("98%"),
@@ -402,7 +352,8 @@ const styles = EStyleSheet.create({
         width: "100%",
         paddingLeft: 8,
         paddingRight: 8,
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        height:setWidth('22%')
     },
     title: {
         ...small_bold,
@@ -465,7 +416,49 @@ const styles = EStyleSheet.create({
     textMoney: {
         ...mini2,
         //color: colors.button1,
-        fontWeight: "500"
-    }
+        fontWeight: "bold"
+    },
+    buttonFunction: {
+        width: "100%",
+        height: 30,
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: "row",
+        marginBottom: 5
+    },
+    btnEdit: {
+        width: "48%",
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "row",
+        borderRadius: 5,
+        marginLeft: "1%",
+    },
+    iconEdit: {
+        marginRight: 5
+    },
+    textEdit: {
+        fontSize: 16,
+        color: colors.white,
+        fontWeight: "bold"
+    },
+    btnDelete: {
+        width: "48%",
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "row",
+        borderRadius: 5,
+        marginRight: "1%"
+    },
+    iconDelete: {
+        marginRight: 5
+    },
+    textDelete: {
+        fontSize: 16,
+        color: colors.white,
+        fontWeight: "bold"
+    },
 });
 

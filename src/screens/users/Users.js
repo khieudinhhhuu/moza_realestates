@@ -21,7 +21,7 @@ import {
     AppRegistry,
     Modal,
     Switch,
-    Linking,
+    Linking, ActivityIndicator, ToastAndroid,
 } from "react-native";
 import Icon from "react-native-vector-icons/EvilIcons";
 import Icon2 from "react-native-vector-icons/Feather";
@@ -66,9 +66,13 @@ export default class Users extends Component {
         this.state = {
             data: [],
             userPosts: "",
-            isLoading: false,
+            followUser: "",
+            isLoading: true,
             photoURL: 'http://media2.sieuhai.tv:8088/onbox/images/user_lead_image/20190408/84947430634_20190408001343.jpg',
             bg: colors.blue,
+            checkFollow: false,
+            txtFollow: Locales.Follow,
+            iconFollow: "rss",
         };
 
         thisState = this;
@@ -92,7 +96,7 @@ export default class Users extends Component {
             )
         }
 
-
+        let array = [];
         const item = this.props.navigation.state.params.item;
         console.log("item8888: " + JSON.stringify(item));
         firebaseApp.database().ref('data').child('sell').on('value', function (snapshot) {
@@ -100,14 +104,59 @@ export default class Users extends Component {
             snapshot.forEach(function (childSnapshot) {
                 console.log("childSnapshot999: " + JSON.stringify(childSnapshot));
                 const childData = childSnapshot.val();
-                if (childData.email === item.email) {
+                if (childData.uid === item.uid) {
+                    array.push({
+                        id: childSnapshot.key,
+                        image: childData.image,
+                        address: childData.address,
+                        type: childData.type,
+                        direction: childData.direction,
+                        latitude: childData.latitude,
+                        longitude: childData.longitude,
+                        location: childData.location,
+                        name: childData.name,
+                        owner: childData.owner,
+                        price: childData.price,
+                        sqm: childData.sqm,
+                        year: childData.year,
+                        description: childData.description,
+                        detail: childData.detail,
+                        email: childData.email,
+                        displayName: childData.displayName,
+                        photoURL: childData.photoURL,
+                        phoneNumber: childData.phoneNumber,
+                        addressUser: childData.addressUser,
+                        follow: childData.follow,
+                        checkFavourite: childData.checkFavourite,
+                        uid: childData.uid,
+                    });
                     thisState.setState({
-                        isLoading: true,
-                        userPosts: childData,
+                        isLoading: false,
+                        data: array,
+                    }, function () {
+                        console.log("data_libaba: " + JSON.stringify(this.state.data));
+                    });
+                }
+            });
+            thisState.setState({
+                userPosts: thisState.state.data,
+                isLoading: false,
+            }, function () {
+                console.log("userPosts: " + JSON.stringify(this.state.userPosts));
+            });
+        });
+
+
+        firebaseApp.database().ref('users').child('accounts').on('value', function (snapshot) {
+            snapshot.forEach(function (childSnapshot) {
+                const childData = childSnapshot.val();
+                if (childData.uid === item.uid) {
+                    thisState.setState({
+                        isLoading: false,
+                        followUser: childData,
                     }, () => {
-                        console.log("userPosts: " + JSON.stringify(childData));
-                        console.log("userPosts_name: " + childData.name);
-                        console.log("userPosts_email: " + childData.email);
+                        console.log("currentUser: " + JSON.stringify(childData));
+                        console.log("currentUser_displayName: " + childData.displayName);
                     })
                 }
             });
@@ -115,16 +164,82 @@ export default class Users extends Component {
 
     }
 
+    onFollow(){
+        const item = this.props.navigation.state.params.item;
+        if (this.state.checkFavourite === true) {
+            this.setState({
+                checkFavourite: false,
+                txtFollow: Locales.Follow,
+                iconFollow: "rss",
+            });
+            ToastAndroid.showWithGravityAndOffset(
+                "Un" + Locales.Follow + " " + item.displayName,
+                ToastAndroid.LONG, ToastAndroid.BOTTOM, 25,100,
+            );
+        } else {
+            this.setState({
+                checkFavourite: true,
+                txtFollow: "Followed",
+                iconFollow: "rss-square",
+            });
+            ToastAndroid.showWithGravityAndOffset(
+                "Followed " + item.displayName,
+                ToastAndroid.LONG, ToastAndroid.BOTTOM, 25, 100,
+            );
+            this.saveFollow();
+            this.plusFollow();
+        }
+    }
+
+    saveFollow(){
+        const item = this.props.navigation.state.params.item;
+        const user = firebaseApp.auth().currentUser;
+        firebaseApp.database().ref('users').child('accounts').child(user.uid).child('followed').child(item.uid).update({
+            uid: item.uid,
+            displayName: item.displayName,
+            email: item.email
+        });
+    }
+
+    plusFollow(){
+        const item = this.props.navigation.state.params.item;
+        firebaseApp.database().ref('users').child('accounts').child(this.state.followUser.uid).update({
+            follow: item.follow + 1,
+        });
+
+        firebaseApp.database().ref('data').child('sell').child(item.id).update({
+            follow: item.follow + 1,
+        });
+
+    }
 
     render() {
         const {navigate} = this.props.navigation;
         const {navigation} = this.props;
         const color = this.state.bg;
         const item = this.props.navigation.state.params.item;
+        if (this.state.isLoading) {
+            return (
+                <View style={styles.container}>
+                    <StatusBar
+                        barStyle="dank-content"
+                        hidden={false}
+                        backgroundColor="transparent"
+                        translucent
+                    />
+                    <View style={styles.header}>
+                        <Icon4 onPress={() => navigation.goBack()} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>
+                        <TextComponent style={styles.titleHeader}>{Locales.PersonalInformation}</TextComponent>
+                        <Icon style={styles.iconBell} name="bell" size={px2dp(30)} />
+                    </View>
+                    <ActivityIndicator style={{flex: 0.7, justifyContent: "center"}} size="large"/>
+                </View>
+            );
+        }
         return (
             <View style={styles.container}>
                 <StatusBar
-                    // barStyle="$statusBar"
+                    barStyle="dank-content"
                     hidden={false}
                     backgroundColor="transparent"
                     translucent
@@ -148,7 +263,7 @@ export default class Users extends Component {
                         <View style={styles.follows}>
                             <Icon8 style={styles.iconFollows} name="rss" size={px2dp(18)} color="#000"/>
                             <TextComponent style={styles.textFollows}>{Locales.Followedby}</TextComponent>
-                            <TextComponent style={styles.numberFollows}>283 {Locales.people}</TextComponent>
+                            <TextComponent style={styles.numberFollows}>{this.state.followUser.follow} {Locales.people}</TextComponent>
                         </View>
                         <View style={styles.btn}>
                             <TouchableOpacity style={[styles.btnCall, {backgroundColor: color}]} onPress={() => Linking.openURL(`tel:${item.phoneNumber}`)}>
@@ -159,9 +274,9 @@ export default class Users extends Component {
                                 <Icon4 style={styles.iconChat} name="wechat" size={px2dp(15)} color="#fff"/>
                                 <TextComponent style={styles.textChat}>{Locales.Chat}</TextComponent>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.btnFollow, {backgroundColor: color}]}>
-                                <Icon3 style={styles.iconFollow} name="rss" size={px2dp(15)} color="#fff"/>
-                                <TextComponent style={styles.textFollow}>{Locales.Follow}</TextComponent>
+                            <TouchableOpacity style={[styles.btnFollow, {backgroundColor: color}]} onPress={() => this.onFollow()}>
+                                <Icon7 style={styles.iconFollow} name={this.state.iconFollow} size={px2dp(15)} color="#fff"/>
+                                <TextComponent style={styles.textFollow}>{this.state.txtFollow}</TextComponent>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.recentlyView}>
@@ -172,26 +287,26 @@ export default class Users extends Component {
                             <FlatList
                                 data={this.state.userPosts}
                                 renderItem={({item}) => (
-                                    <TouchableOpacity style={styles.item} onPress={() => navigate('Sell_Detail',{item: this.state.userPosts})}>
-                                        <FastImage style={styles.imageItem} source={{uri: this.state.userPosts.image}}/>
+                                    <TouchableOpacity style={styles.item} onPress={() => navigate('Sell_Detail',{item: item})}>
+                                        <FastImage style={styles.imageItem} source={{uri: item.image}}/>
                                         <View style={styles.partBottom}>
                                             <View style={styles.viewTitle}>
-                                                <TextComponent style={styles.textTitle}>{this.state.userPosts.name}</TextComponent>
+                                                <TextComponent style={styles.textTitle}>{item.name}</TextComponent>
                                             </View>
                                             <View style={styles.content4}>
                                                 <View style={styles.viewAddress}>
                                                     <Icon4 style={styles.iconEnviromento} name="enviromento" size={px2dp(11)} color="#666"/>
-                                                    <TextComponent style={styles.textCity}>{this.state.userPosts.address}</TextComponent>
+                                                    <TextComponent style={styles.textCity}>{item.address}</TextComponent>
                                                 </View>
                                                 <View style={styles.viewSqm}>
                                                     <Icon4 style={styles.iconHome} name="home" size={px2dp(11)} color="#666"/>
-                                                    <Text style={styles.textKm}>{this.state.userPosts.sqm}</Text>
+                                                    <Text style={styles.textKm}>{item.sqm}</Text>
                                                     <Text style={styles.textUnit}>sq/m</Text>
                                                 </View>
                                             </View>
                                             <View style={styles.viewPrice}>
                                                 <TextComponent style={styles.textCurrency}>$</TextComponent>
-                                                <TextComponent style={styles.textMoney}>{this.state.userPosts.price}</TextComponent>
+                                                <TextComponent style={styles.textMoney}>{item.price}</TextComponent>
                                             </View>
                                         </View>
                                     </TouchableOpacity>

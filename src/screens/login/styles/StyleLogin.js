@@ -24,7 +24,7 @@ import {
 import {setHeight, setWidth} from "../../../cores/viewComponents/baseFunctions/BaseFunctions";
 import {colors} from "../../../cores/styles/colors";
 import EStyleSheet from "react-native-extended-stylesheet";
-import {large_bold, medium, small2, small2_bold, small_bold} from "../../../cores/styles/styleText";
+import {large_bold, medium,small, small2, small2_bold, small_bold} from "../../../cores/styles/styleText";
 
 export const styles = StyleSheet.create({
     container: {
@@ -89,7 +89,7 @@ export const styles = StyleSheet.create({
     },
     textInput: {
         width: "100%",
-        ...small2,
+        ...small,
         textAlign: "left",
         paddingRight: 7
     },

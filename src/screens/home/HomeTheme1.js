@@ -150,21 +150,22 @@ export default class HomeTheme1 extends Component {
                 });
 
             });
-            thisState.setState(
-                {
-                    data: array,
-                    dataSource: array,
-                    isLoading: false,
-                },
-                function () {
-                    this.arrayholder = array;
-                }
+            thisState.setState({
+                data: array,
+                dataSource: array,
+                isLoading: false,
+            },
+            function () {
+                this.arrayholder = array;
+            }
             );
         });
 
         let array2 = [];
+        const user = firebaseApp.auth().currentUser;
         firebaseApp.database().ref('data').child('sell').on('value', function (snapshot) {
             snapshot.forEach(function (childSnapshot) {
+                console.log('childSnapshot: ' + JSON.stringify(childSnapshot));
                 let childData = childSnapshot.val();
                 array2.push({
                     id: childSnapshot.key,
@@ -187,22 +188,25 @@ export default class HomeTheme1 extends Component {
                     photoURL: childData.photoURL,
                     phoneNumber: childData.phoneNumber,
                     addressUser: childData.addressUser,
+                    follow: childData.follow,
+                    checkFavourite: childData.checkFavourite,
+                    uid: childData.uid,
                 });
-
             });
-            thisState.setState(
-                {
-                    data2: array2,
-                    dataSource2: array2,
-                    isLoading: false,
-                },
-                function () {
-                    this.arrayholder = array2;
-                }
-            );
+            thisState.setState({
+                data2: array2,
+                dataSource2: array2,
+                isLoading: false,
+            },
+            function () {
+                this.arrayholder = array2;
+            });
         });
 
     }
+
+    //chuyen object thanh mang
+    //let snap = Object.values(snapshot.val());
 
     onCheck(value) {
         //console.log("value: " + value);

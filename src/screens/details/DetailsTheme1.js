@@ -234,7 +234,6 @@ export default class DetailsTheme1 extends Component {
             checkFavourite: true,
         });
 
-
     }
 
     render() {

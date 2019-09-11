@@ -218,32 +218,12 @@ export const styles = EStyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between"
     },
-    status: {
-        width: 60,
-        height: 23,
-        //backgroundColor: colors.button1,
-        borderRadius: 16,
-        justifyContent: "center",
-        alignItems: "center",
-        top: 13,
-        left: 11
-    },
-    textStatus: {
-        color: colors.white,
-        ...mini,
-    },
     partBottom: {
         width: "100%",
-        paddingLeft: 10,
-        paddingRight: 15,
+        paddingLeft: 8,
+        paddingRight: 8,
         justifyContent: "space-between"
     },
-    content2: {
-        width: "40%",
-        marginTop: 10,
-        marginLeft: 6
-    },
-    rating: {},
     viewTitle: {
         width: "100%",
         marginTop: 7
@@ -254,19 +234,21 @@ export const styles = EStyleSheet.create({
     },
     content4: {
         width: "100%",
+        alignItems: "flex-start",
         justifyContent: "space-between",
-        alignItems: "center",
         flexDirection: "row",
-        marginTop: 7
+        marginTop: 3,
     },
     viewAddress: {
         width: "50%",
-        alignItems: "center",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
         flexDirection: "row",
-        marginRight: 7
+        paddingRight: 7,
     },
     iconEnviromento: {
         marginRight: 2,
+        marginTop: 1,
     },
     textCity: {
         ...mini,
@@ -275,7 +257,8 @@ export const styles = EStyleSheet.create({
     viewSqm: {
         width: "50%",
         alignItems: "center",
-        flexDirection: "row"
+        justifyContent: "flex-end",
+        flexDirection: "row",
     },
     iconHome: {
         marginRight: 2
@@ -294,7 +277,7 @@ export const styles = EStyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         marginBottom: 10,
-        marginTop: 5
+        marginTop: 2
     },
     textCurrency: {
         ...mini2_bold,

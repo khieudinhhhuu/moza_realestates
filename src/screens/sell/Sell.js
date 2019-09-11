@@ -200,7 +200,7 @@ export default class Sell extends Component {
 
         this.state = {
             isLoading: false,
-            image_uri: 'http://chittagongit.com/download/7430',
+            image_uri: 'https://png.pngtree.com/png-vector/20190419/ourmid/pngtree-vector-add-icon-png-image_957237.jpg',
             name: "",
             owner: "",
             price: "",
@@ -323,7 +323,7 @@ export default class Sell extends Component {
         const user = firebaseApp.auth().currentUser;
         //console.log("wwwwwww: " + JSON.stringify(this.state.currentUser));
         //console.log("kkkkkkk: " + JSON.stringify(this.state.currentUser.displayName));
-        firebaseApp.database().ref('data').child('sell').child(user.uid).push({
+        firebaseApp.database().ref('data').child('sell').push({
             name: this.state.name,
             owner: this.state.owner,
             price: this.state.price,
@@ -343,7 +343,9 @@ export default class Sell extends Component {
             photoURL: this.state.currentUser.photoURL,
             phoneNumber: this.state.currentUser.phoneNumber,
             addressUser: this.state.currentUser.address,
+            follow: this.state.currentUser.follow,
             checkFavourite: false,
+            uid: user.uid,
         });
 
         //this.props.navigation.navigate('Menu');
