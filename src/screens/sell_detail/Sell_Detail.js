@@ -97,6 +97,16 @@ export default class Sell_Detail extends Component {
 
     }
 
+    checkUser(item){
+        console.log("item: " + item.status);
+        const user = firebaseApp.auth().currentUser;
+        if (user.uid === item.uid) {
+            this.props.navigation.navigate("UsersCurrent");
+        } else {
+            this.props.navigation.navigate("Users", {item: item});
+        }
+    }
+
     render() {
         const {navigate} = this.props.navigation;
         const {navigation} = this.props;
@@ -188,7 +198,7 @@ export default class Sell_Detail extends Component {
                                 }}
                             />
                         </MapView>
-                        <TouchableOpacity style={styles.informationUser} onPress={() => navigate("Users", {item: item})}>
+                        <TouchableOpacity style={styles.informationUser} onPress={() => this.checkUser(item)}>
                             <View style={styles.viewAvatar}>
                                 <Image style={styles.imageAvatar} source={{uri: item.photoURL}}/>
                             </View>

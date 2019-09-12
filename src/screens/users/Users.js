@@ -262,11 +262,11 @@ export default class Users extends Component {
     plusFollow(){
         const item = this.props.navigation.state.params.item;
         firebaseApp.database().ref('users').child('accounts').child(this.state.followUser.uid).update({
-            follow: item.follow + 1,
+            follow: this.state.followUser.follow + 1,
         });
 
         firebaseApp.database().ref('data').child('sell').child(item.id).update({
-            follow: item.follow + 1,
+            follow: this.state.followUser.follow + 1,
         });
     }
 

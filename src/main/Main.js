@@ -57,6 +57,7 @@ import HomeMrBean from "../screens/mrbean/HomeMrBean";
 import DetailStore from "../screens/mrbean/DetailStore";
 import EditPost from "../screens/edit_post/EditPost";
 import EditOnePost from "../screens/edit_post/EditOnePost";
+import UsersCurrent from "../screens/users_current/UsersCurrent";
 
 
 class App extends Component {
@@ -162,6 +163,12 @@ const AppNavigator = createStackNavigator({
     },
     Users: {
         screen: Users,
+        navigationOptions: {
+            header: null
+        }
+    },
+    UsersCurrent: {
+        screen: UsersCurrent,
         navigationOptions: {
             header: null
         }

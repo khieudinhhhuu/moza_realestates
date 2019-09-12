@@ -670,12 +670,12 @@ export default class Sell extends Component {
                             {/*    <Text style={styles.textLocation}>{Locales.ChooseLocationForRealEstate}</Text>*/}
                             {/*</TouchableOpacity>*/}
                             <TouchableOpacity style={styles.btnLocation} onPress={() => navigate('SelectLocation', {onLocation: this.onLocation })}>
-                                <Text style={styles.textLocation}>SelectLocation</Text>
+                                <Text style={styles.textLocation}>Select Location</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.btn}>
                             <TouchableOpacity style={[styles.btnPost, {backgroundColor: color}]} onPress={() => this._onPost()}>
-                                <TextComponent style={styles.textPost}>{Locales.POSTBELIEVE}</TextComponent>
+                                <TextComponent style={styles.textPost}>{Locales.POSTSALE}</TextComponent>
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.btnCancel, {backgroundColor: color}]} onPress={() => navigation.goBack()}>
                                 <TextComponent style={styles.textCancel}>{Locales.Cancel}</TextComponent>

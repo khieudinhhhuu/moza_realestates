@@ -53,7 +53,6 @@ export const styles = EStyleSheet.create({
     iconLeft: {
         marginTop: 20,
         color: colors.white,
-        marginLeft: 5,
     },
     titleHeader: {
         color: colors.white,
@@ -64,7 +63,6 @@ export const styles = EStyleSheet.create({
     iconBell: {
         marginTop: 20,
         color: colors.white,
-        marginRight: 5,
     },
     keyboardView: {
         width: setWidth("100%"),

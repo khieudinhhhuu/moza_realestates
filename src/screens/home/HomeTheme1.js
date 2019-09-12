@@ -240,7 +240,6 @@ export default class HomeTheme1 extends Component {
         } else {
             this.props.navigation.navigate('Properties');
         }
-
     }
 
     SearchFilterFunction(text) {
@@ -259,10 +258,6 @@ export default class HomeTheme1 extends Component {
         });
     }
 
-    _onUpdate(){
-        Alert.alert("Function is updating");
-    }
-
     render() {
         const color = this.state.bg;
         if (this.state.isLoading) {
@@ -276,9 +271,9 @@ export default class HomeTheme1 extends Component {
                     />
                     <ImageBackground style={styles.imageBackground} source={require("../../assets/image/villa01.jpg")}>
                         <View style={styles.header}>
-                            <Icon onPress={() => this._onUpdate()} style={styles.iconLeft} name="navicon" size={px2dp(34)}/>
+                            <Icon style={styles.iconLeft} name="navicon" size={px2dp(34)}/>
                             <TextComponent style={styles.titleHeader}>{Locales.Home}</TextComponent>
-                            <Icon onPress={() => this._onUpdate()} style={styles.iconBell} name="bell" size={px2dp(31)}/>
+                            <Icon style={styles.iconBell} name="bell" size={px2dp(31)}/>
                         </View>
                         <View style={styles.searchBar}>
                             <TextInput style={styles.textInputSearch}
@@ -426,9 +421,9 @@ export default class HomeTheme1 extends Component {
 
                 <Animated.View style = {[ styles.HeaderStyle, { height: AnimateHeaderHeight, backgroundColor: AnimateHeaderBackgroundColor } ]}>
                     <View style={styles.header}>
-                        <Icon onPress={() => this._onUpdate()} style={styles.iconLeft} name="navicon" size={px2dp(34)}/>
+                        <Icon style={styles.iconLeft} name="navicon" size={px2dp(34)}/>
                         <TextComponent style={styles.titleHeader}>{Locales.Home}</TextComponent>
-                        <Icon onPress={() => this._onUpdate()} style={styles.iconBell} name="bell" size={px2dp(31)}/>
+                        <Icon style={styles.iconBell} name="bell" size={px2dp(31)}/>
                     </View>
                 </Animated.View>
 

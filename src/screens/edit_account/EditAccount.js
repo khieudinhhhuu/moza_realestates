@@ -95,6 +95,7 @@ export default class EditAccount extends Component {
             phoneNumber: "",
             address: "",
             email: "",
+            follow: "",
             bg: colors.blue,
         };
         thisState = this;
@@ -125,19 +126,21 @@ export default class EditAccount extends Component {
         const phoneNumber = navigation.getParam('phoneNumber', Locales.PhoneNumber);
         const address = navigation.getParam('address', Locales.Address);
         const email = navigation.getParam('email', "Email");
+        const follow = navigation.getParam('follow', "Follow");
         thisState.setState({
             photoURL: photoURL,
             displayName: displayName,
             phoneNumber: phoneNumber,
             address: address,
             email: email,
+            follow: follow,
         });
 
 
         let array = [];
         firebaseApp.database().ref('users').child('account').on('value', function (snapshot) {
             snapshot.forEach(function (childSnapshot) {
-                var childData = childSnapshot.val();
+                let childData = childSnapshot.val();
                 array.push({
                     id: childSnapshot.key,
                     email: childData.email,
@@ -160,6 +163,7 @@ export default class EditAccount extends Component {
         console.log('phoneNumber: ' + this.state.phoneNumber);
         console.log('address: ' + this.state.address);
         console.log('email: ' + this.state.email);
+        console.log('follow: ' + this.state.follow);
         if (this.state.displayName.trim() === '' || this.state.phoneNumber.trim() === '' || this.state.address.trim() === '') {
             Alert.alert('Error !!!', 'Please enter Text Content');
             return
@@ -187,9 +191,9 @@ export default class EditAccount extends Component {
 
     goBack(){
         const { navigation } = this.props;
-        const {photoURL, displayName, phoneNumber, address, email} = this.state;
+        const {photoURL, displayName, phoneNumber, address, email, follow} = this.state;
         navigation.goBack();
-        navigation.state.params.onUpdateUser({email: email, photoURL: photoURL, displayName: displayName, phoneNumber: phoneNumber, address: address });
+        navigation.state.params.onUpdateUser({follow: follow, email: email, photoURL: photoURL, displayName: displayName, phoneNumber: phoneNumber, address: address });
     }
 
     uploadImage(uri, mime = 'application/octet-stream') {

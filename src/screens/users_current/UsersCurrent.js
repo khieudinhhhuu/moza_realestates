@@ -44,10 +44,23 @@ import darkTheme from "../../cores/viewComponents/themes/dark";
 import lightTheme from "../../cores/viewComponents/themes/light";
 import EStyleSheet from "react-native-extended-stylesheet";
 import {firebaseApp} from '../../components/firebase/Realtimedb';
-import {styles} from "./styles/StyleProfileTheme1";
-import {getDataOfflineMode, setWidth, validateText} from "../../cores/viewComponents/baseFunctions/BaseFunctions";
+import {
+    getDataOfflineMode,
+    setHeight,
+    setWidth,
+    validateText
+} from "../../cores/viewComponents/baseFunctions/BaseFunctions";
 import constants from "../../assets/constants";
 import global from "../../cores/utils/global";
+import {
+    large_bold,
+    medium,
+    medium2_bold,
+    medium_bold, mini,
+    mini2_bold,
+    small2,
+    small2_bold
+} from "../../cores/styles/styleText";
 
 const deviceW = Dimensions.get("window").width;
 
@@ -57,11 +70,7 @@ function px2dp(px) {
     return (px * deviceW) / basePx;
 }
 
-const Header_Maximum_Height = 70;
-
-const Header_Minimum_Height = 70;
-
-export default class ProfileTheme1 extends Component {
+export default class UsersCurrent extends Component {
 
     constructor(props) {
         super(props);
@@ -77,7 +86,6 @@ export default class ProfileTheme1 extends Component {
             bg: colors.blue,
         };
 
-        this.AnimatedHeaderValue = new Animated.Value(0);
         thisState = this;
         //1 dau = de dung cho lenh gan
         //2 dau bang la de dung trong so sanh (tuong doi)
@@ -266,34 +274,17 @@ export default class ProfileTheme1 extends Component {
         const {navigate} = this.props.navigation;
         const {navigation} = this.props;
         const color = this.state.bg;
-        const AnimateHeaderBackgroundColor = this.AnimatedHeaderValue.interpolate(
-            {
-                inputRange: [ 0, ( Header_Maximum_Height - Header_Minimum_Height )  ],
-
-                outputRange: [ 'transparent' , this.state.bg ],
-
-                extrapolate: 'clamp'
-            });
-        const AnimateHeaderHeight = this.AnimatedHeaderValue.interpolate(
-            {
-                inputRange: [ 0, ( Header_Maximum_Height - Header_Minimum_Height ) ],
-
-                outputRange: [ Header_Maximum_Height, Header_Minimum_Height ],
-
-                extrapolate: 'clamp'
-            });
         if (this.state.isLoading) {
             return (
                 <View style={styles.container}>
                     <StatusBar
-                        //barStyle="dank-content"
+                        barStyle="dank-content"
                         hidden={false}
                         backgroundColor="transparent"
                         translucent
                     />
                     <View style={styles.header}>
-                        <View style={styles.iconLeft}/>
-                        {/*<Icon4 onPress={() => navigate('Menu')} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>*/}
+                        <Icon4 onPress={() => navigation.goBack()} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>
                         <TextComponent style={styles.titleHeader}>{Locales.Profile}</TextComponent>
                         <Icon style={styles.iconBell} name="bell" size={px2dp(30)} color="#fff"/>
                     </View>
@@ -304,19 +295,17 @@ export default class ProfileTheme1 extends Component {
         return (
             <View style={styles.container}>
                 <StatusBar
-                    // barStyle="$statusBar"
+                    barStyle="dank-content"
                     hidden={false}
                     backgroundColor="transparent"
                     translucent
                 />
-                <KeyboardAwareScrollView
-                    style={styles.keyboardView}
-                    scrollEventThrottle = { 16 }
-                    //contentContainerStyle = {{ paddingTop: Header_Maximum_Height }}
-                    onScroll = { Animated.event(
-                        [{ nativeEvent: { contentOffset: { y: this.AnimatedHeaderValue }}}]
-                    )}
-                >
+                <View style={styles.header}>
+                    <Icon4 onPress={() => navigation.goBack()} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>
+                    <TextComponent style={styles.titleHeader}>{Locales.Profile}</TextComponent>
+                    <Icon style={styles.iconBell} name="bell" size={px2dp(30)} color="#fff"/>
+                </View>
+                <KeyboardAwareScrollView style={styles.keyboardView}>
                     <View style={styles.body}>
                         <Image style={styles.imageItem} source={require("../../assets/image/villa7.jpg")}/>
                         <View style={styles.avatar}>
@@ -331,18 +320,14 @@ export default class ProfileTheme1 extends Component {
                         <View style={styles.follows}>
                             <Icon8 style={styles.iconFollows} name="rss" size={px2dp(18)} color="#000"/>
                             <TextComponent style={styles.textFollows}>{Locales.Followedby}</TextComponent>
-                            <TouchableOpacity >
-                                <TextComponent style={styles.numberFollows}>{this.state.currentUser.follow} {Locales.people}</TextComponent>
-                            </TouchableOpacity>
+                            <TextComponent style={styles.numberFollows}>{this.state.currentUser.follow} {Locales.people}</TextComponent>
                         </View>
                         <TouchableOpacity style={styles.editUser} onPress={() => navigate("EditAccount",
-                            {
-                                photoURL: this.state.currentUser.photoURL,
+                            {photoURL: this.state.currentUser.photoURL,
                                 displayName: this.state.currentUser.displayName,
                                 phoneNumber: this.state.currentUser.phoneNumber,
                                 address: this.state.currentUser.address,
                                 email: this.state.currentUser.email,
-                                follow: this.state.currentUser.follow,
                                 onUpdateUser: this.onUpdateUser}
                         )}>
                             <Icon6 style={styles.iconEditUser} name="account-edit" size={px2dp(35)} color="black"/>
@@ -366,7 +351,7 @@ export default class ProfileTheme1 extends Component {
                             <FlatList
                                 data={this.state.data3}
                                 renderItem={({item}) => (
-                                    <TouchableOpacity style={styles.item} onPress={() => navigate('Details',{item: item})}>
+                                    <TouchableOpacity style={styles.item} onPress={() => navigate('Sell_Detail',{item: item})}>
                                         <FastImage
                                             style={styles.imageItemTwo}
                                             source={{uri: item.image}}
@@ -405,278 +390,261 @@ export default class ProfileTheme1 extends Component {
                     </View>
                 </KeyboardAwareScrollView>
 
-                <Animated.View style = {[ styles.HeaderStyle, { height: AnimateHeaderHeight, backgroundColor: AnimateHeaderBackgroundColor } ]}>
-
-                    <View style={styles.header}>
-                        <View style={styles.iconLeft}/>
-                        {/*<Icon4 onPress={() => navigate('Menu')} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>*/}
-                        <TextComponent style={styles.titleHeader}>{Locales.Profile}</TextComponent>
-                        <Icon style={styles.iconBell} name="bell" size={px2dp(30)} color="#fff"/>
-                    </View>
-
-                </Animated.View>
-
             </View>
         );
     }
 }
 
-// const styles = EStyleSheet.create({
-//     container: {
-//         flex: 1,
-//         alignItems: "center",
-//         backgroundColor: "$background"
-//     },
-//     keyboardView: {
-//         width: "100%",
-//         height: "100%"
-//     },
-//     fake: {
-//         width: "100%",
-//         height: "100%",
-//         justifyContent: "center",
-//         alignItems: "center"
-//     },
-//     imageBackground: {
-//         width: "100%",
-//         height: 270,
-//         alignItems: "center"
-//     },
-//     tabar: {
-//         width: "90%",
-//         height: 50,
-//         justifyContent: "space-between",
-//         alignItems: "center",
-//         flexDirection: "row",
-//         marginTop: 20
-//     },
-//     arrowleft: {
-//         width: 35,
-//         alignItems: "flex-start"
-//     },
-//     iconArrowleft: {
-//
-//     },
-//     profile: {
-//         width: 130,
-//         justifyContent: "center",
-//         alignItems: "center"
-//     },
-//     titleProfile: {
-//         fontSize: 22,
-//         fontWeight: "bold",
-//         color: "#fff"
-//     },
-//     bell: {
-//         width: 35,
-//         alignItems: "center"
-//     },
-//     iconBell: {
-//         marginLeft: 3
-//     },
-//     avatar: {
-//         width: 130,
-//         height: 130,
-//         borderRadius: 130,
-//         backgroundColor: "#fff",
-//         borderWidth: 0.5,
-//         borderColor: "#666",
-//         justifyContent: "center",
-//         alignItems: "center",
-//         position: "absolute",
-//         top: 165
-//     },
-//     imageAvatar: {
-//         width: 125,
-//         height: 125,
-//         borderRadius: 125
-//     },
-//     edit: {
-//         width: 40,
-//         height: 40,
-//         right: 15,
-//         position: "absolute",
-//         top: 310
-//     },
-//     iconEdit: {
-//         color: "$textColor",
-//     },
-//     name: {
-//         width: "85%",
-//         alignItems: "center",
-//         marginTop: 35
-//     },
-//     textName: {
-//         fontSize: 20,
-//         fontWeight: "500",
-//         color: "$textColor"
-//     },
-//     textEmail: {
-//         fontSize: 16,
-//         color: "$textColor"
-//     },
-//     content: {
-//         width: "65%",
-//         height: 60,
-//         flexDirection: "row",
-//         justifyContent: "space-evenly",
-//         alignItems: "center",
-//         marginTop: 20
-//     },
-//     followers: {
-//         width: "50%",
-//         height: "100%",
-//         flexDirection: "column",
-//         justifyContent: "center",
-//         alignItems: "center",
-//         borderTopWidth: 1,
-//         borderRightWidth: 1,
-//         borderBottomWidth: 1,
-//         borderColor: "#BDBDBD"
-//     },
-//     textNumberFollowers: {
-//         fontSize: 18,
-//         color: "$textColor"
-//     },
-//     textFollowers: {
-//         fontSize: 18,
-//         color: "$textColor"
-//     },
-//     properties: {
-//         width: "50%",
-//         height: "100%",
-//         flexDirection: "column",
-//         justifyContent: "center",
-//         alignItems: "center",
-//         borderTopWidth: 1,
-//         borderLeftWidth: 1,
-//         borderBottomWidth: 1,
-//         borderColor: "#BDBDBD"
-//     },
-//     textNumberProperties: {
-//         fontSize: 18,
-//         color: "$textColor"
-//     },
-//     textProperties: {
-//         fontSize: 18,
-//         color: "$textColor"
-//     },
-//     recentlyView: {
-//         width: "90%",
-//         alignItems: "flex-start",
-//         marginTop: 30,
-//         marginBottom: 10
-//     },
-//     textRecentlyView: {
-//         fontSize: 16,
-//         fontWeight: "500",
-//         color: "$textColor"
-//     },
-//     body: {
-//         width: "90%"
-//     },
-//     touchable: {
-//         width: 167,
-//         marginRight: 18,
-//         backgroundColor: "#fff",
-//         marginTop: 10,
-//         marginBottom: 15,
-//         borderRadius: 5
-//     },
-//     fastImage: {
-//         width: "100%",
-//         height: 150,
-//         borderRadius: 3,
-//         flexDirection: "row",
-//         justifyContent: "space-between"
-//     },
-//     status: {
-//         width: 60,
-//         height: 23,
-//         backgroundColor: "#0174DF",
-//         borderRadius: 16,
-//         justifyContent: "center",
-//         alignItems: "center",
-//         top: 13,
-//         left: 11
-//     },
-//     textStatus: {
-//         color: "#fff",
-//         fontSize: 10
-//     },
-//     partBottom: {
-//         width: "100%",
-//         paddingLeft: 10,
-//         paddingRight: 15,
-//         justifyContent: "space-between"
-//     },
-//     content2: {
-//         width: "40%",
-//         marginTop: 10,
-//         marginLeft: 6
-//     },
-//     rating: {},
-//     content3: {
-//         width: "100%",
-//         marginTop: 7
-//     },
-//     title: {
-//         fontSize: 13,
-//         color: "black",
-//         fontWeight: "500"
-//     },
-//     content4: {
-//         width: "100%",
-//         justifyContent: "space-between",
-//         alignItems: "center",
-//         flexDirection: "row",
-//         marginTop: 7
-//     },
-//     content5: {
-//         width: "50%",
-//         alignItems: "center",
-//         flexDirection: "row",
-//         marginRight: 7
-//     },
-//     iconEnviromento: {
-//         marginRight: 2,
-//     },
-//     textCity: {
-//         fontSize: 11,
-//         color: "#666"
-//     },
-//     content6: {
-//         width: "50%",
-//         alignItems: "center",
-//         flexDirection: "row"
-//     },
-//     iconHome: {
-//         marginRight: 2
-//     },
-//     textKm: {
-//         marginRight: 2,
-//         fontSize: 11,
-//         color: "#666"
-//     },
-//     textUnit: {
-//         fontSize: 11,
-//         color: "#666"
-//     },
-//     content7: {
-//         width: "100%",
-//         alignItems: "center",
-//         flexDirection: "row",
-//         marginBottom: 10,
-//         marginTop: 5
-//     },
-//     textCurrency: {
-//         fontSize: 13,
-//         color: "#2E64FE",
-//         fontWeight: "500"
-//     },
-//     textMoney: {
-//         fontSize: 14,
-//         color: "#2E64FE",
-//         fontWeight: "500"
-//     }
-// });
+const styles = EStyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: "center",
+        backgroundColor: "$background"
+    },
+    HeaderStyle: {
+        //justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: (Platform.OS === 'ios') ? 20 : 0,
+    },
+    header: {
+        height: 70,
+        backgroundColor: "$header",
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexDirection: 'row',
+        width: "100%",
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+    iconLeft: {
+        marginTop: 20,
+        color: colors.white,
+    },
+    titleHeader: {
+        color: colors.white,
+        textAlign: "center",
+        ...large_bold,
+        marginTop: 20,
+    },
+    iconBell: {
+        marginTop: 20,
+        color: colors.white,
+    },
+    keyboardView: {
+        width: setWidth("100%"),
+        height: setHeight("100%")
+    },
+    body: {
+        width: setWidth("100%"),
+        height: "100%",
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    imageItem: {
+        width: setWidth("100%"),
+        height: 200,
+        alignItems: "center"
+    },
+    avatar: {
+        width: 130,
+        height: 130,
+        borderRadius: 130,
+        backgroundColor: colors.white,
+        borderWidth: 0.5,
+        borderColor: colors.color_text_second,
+        justifyContent: "center",
+        alignItems: "center",
+        position: "absolute",
+        top: 98
+    },
+    imageAvatar: {
+        width: 125,
+        height: 125,
+        borderRadius: 125
+    },
+    editUser: {
+        width: 40,
+        height: 40,
+        right: 15,
+        position: "absolute",
+        top: 250
+    },
+    iconEditUser: {
+        color: "$textColor",
+    },
+    name: {
+        width: "95%",
+        alignItems: "center",
+        marginTop: 35
+    },
+    textName: {
+        ...medium2_bold,
+        color: "$textColor"
+    },
+    textEmail: {
+        ...small2,
+        color: "$textColor"
+    },
+    follows: {
+        width: "95%",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    iconFollows: {
+        marginRight: 3,
+        color: "$textColor",
+    },
+    textFollows: {
+        ...medium,
+        color: "$textColor",
+        marginRight: 3,
+    },
+    numberFollows: {
+        ...medium_bold,
+        color: "$textColor",
+    },
+    content: {
+        width: setWidth("95%"),
+        height: 40,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginTop: 20,
+    },
+    addPost: {
+        width: "49%",
+        height: "100%",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 5,
+        //backgroundColor: colors.button1
+    },
+    iconAddPost: {
+        marginRight: 3,
+    },
+    textAddPost: {
+        ...medium_bold,
+        color: colors.white,
+    },
+    editPost: {
+        width: "49%",
+        height: "100%",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 5,
+        //backgroundColor: colors.button1
+    },
+    iconEditPost: {
+        marginRight: 3,
+    },
+    textEditPost: {
+        ...medium_bold,
+        color: colors.white,
+        fontWeight: "bold",
+    },
+    recentlyView: {
+        width: setWidth("95%"),
+        alignItems: "flex-start",
+        marginTop: 20,
+        marginBottom: 10
+    },
+    textRecentlyView: {
+        ...small2_bold,
+        color: "$textColor"
+    },
+    FlatList1: {
+        width: setWidth("98%"),
+        marginHorizontal: 5,
+    },
+    item: {
+        flex: 1,
+        justifyContent: "flex-start",
+        alignItems: "center",
+        backgroundColor: "$bg2",
+        margin: 5,
+        borderRadius: 5
+    },
+    imageItemTwo: {
+        width: "100%",
+        height: 150,
+        borderTopLeftRadius: 3,
+        borderTopRightRadius: 3,
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    partBottom: {
+        width: "100%",
+        paddingLeft: 8,
+        paddingRight: 8,
+        justifyContent: "space-between"
+    },
+    viewTitle: {
+        width: "100%",
+        marginTop: 7
+    },
+    title: {
+        ...mini2_bold,
+        color: "$textColor",
+    },
+    content4: {
+        width: "100%",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        flexDirection: "row",
+        marginTop: 3,
+    },
+    viewAddress: {
+        width: "50%",
+        alignItems: "flex-start",
+        justifyContent: "flex-start",
+        flexDirection: "row",
+        paddingRight: 7,
+    },
+    iconEnviromento: {
+        marginRight: 2,
+        marginTop: 1,
+    },
+    textCity: {
+        ...mini,
+        color: colors.color_text_second
+    },
+    viewSqm: {
+        width: "50%",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        flexDirection: "row",
+    },
+    iconHome: {
+        marginRight: 2
+    },
+    textKm: {
+        marginRight: 2,
+        ...mini,
+        color: colors.color_text_second
+    },
+    textUnit: {
+        ...mini,
+        color: colors.color_text_second
+    },
+    viewPrice: {
+        width: "100%",
+        alignItems: "center",
+        flexDirection: "row",
+        marginBottom: 10,
+        marginTop: 2
+    },
+    textCurrency: {
+        ...mini2_bold,
+        //color: colors.button1,
+    },
+    textMoney: {
+        ...mini2_bold,
+        //color: colors.button1,
+    }
+});

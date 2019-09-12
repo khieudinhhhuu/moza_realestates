@@ -200,7 +200,7 @@ export default class EditOnePost extends Component {
 
         this.state = {
             isLoading: false,
-            image_uri: 'http://chittagongit.com/download/7430',
+            image_uri: 'https://png.pngtree.com/png-vector/20190419/ourmid/pngtree-vector-add-icon-png-image_957237.jpg',
             name: "",
             owner: "",
             price: "",
@@ -673,12 +673,12 @@ export default class EditOnePost extends Component {
                             {/*    <Text style={styles.textLocation}>{Locales.ChooseLocationForRealEstate}</Text>*/}
                             {/*</TouchableOpacity>*/}
                             <TouchableOpacity style={styles.btnLocation} onPress={() => navigate('SelectLocation', {onLocation: this.onLocation })}>
-                                <Text style={styles.textLocation}>SelectLocation</Text>
+                                <Text style={styles.textLocation}>Select Location</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.btn}>
                             <TouchableOpacity style={[styles.btnPost, {backgroundColor: color}]} onPress={() => this._onPost()}>
-                                <TextComponent style={styles.textPost}>{Locales.POSTBELIEVE}</TextComponent>
+                                <TextComponent style={styles.textPost}>{Locales.POSTSALE}</TextComponent>
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.btnCancel, {backgroundColor: color}]} onPress={() => navigation.goBack()}>
                                 <TextComponent style={styles.textCancel}>{Locales.Cancel}</TextComponent>
@@ -814,7 +814,7 @@ const styles = EStyleSheet.create({
         justifyContent: "center",
     },
     textInput: {
-        ...small,
+        fontSize: 16,
         paddingLeft: 10,
         paddingRight: 10
     },
@@ -831,7 +831,7 @@ const styles = EStyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         color: colors.black,
-        ...small,
+        fontSize: 16,
         textAlignVertical: 'top'
     },
     content3: {
@@ -870,7 +870,7 @@ const styles = EStyleSheet.create({
         width: setWidth('85%'),
         height: 110,
         alignItems: "center",
-        marginTop: 20,
+        marginTop: 30,
         marginBottom: 20,
     },
     btnPost: {
@@ -880,7 +880,7 @@ const styles = EStyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 5,
-        marginBottom: 15
+        marginBottom: 10
     },
     textPost: {
         ...small2_bold,

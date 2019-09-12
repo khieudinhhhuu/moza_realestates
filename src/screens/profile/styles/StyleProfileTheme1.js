@@ -141,11 +141,11 @@ export const styles = EStyleSheet.create({
     textFollows: {
         ...medium,
         color: "$textColor",
-        marginRight: 3,
     },
     numberFollows: {
         ...medium_bold,
         color: "$textColor",
+        paddingLeft: 5,
     },
     content: {
         width: setWidth("95%"),

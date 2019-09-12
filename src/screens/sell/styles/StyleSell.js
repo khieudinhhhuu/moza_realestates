@@ -126,7 +126,7 @@ export const styles = EStyleSheet.create({
         justifyContent: "center",
     },
     textInput: {
-        ...small,
+        fontSize: 16,
         paddingLeft: 10,
         paddingRight: 10
     },
@@ -143,7 +143,7 @@ export const styles = EStyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         color: colors.black,
-        ...small,
+        fontSize: 16,
         textAlignVertical: 'top'
     },
     content3: {
@@ -182,7 +182,7 @@ export const styles = EStyleSheet.create({
         width: setWidth('85%'),
         height: 110,
         alignItems: "center",
-        marginTop: 20,
+        marginTop: 30,
         marginBottom: 20,
     },
     btnPost: {
@@ -192,7 +192,7 @@ export const styles = EStyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 5,
-        marginBottom: 15
+        marginBottom: 10
     },
     textPost: {
         ...small2_bold,
