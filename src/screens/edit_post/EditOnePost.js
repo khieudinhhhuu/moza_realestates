@@ -783,26 +783,6 @@ const styles = EStyleSheet.create({
     dropdown: {
         marginBottom: 20,
     },
-    // viewSelect: {
-    //   width: 335,
-    //   height: 45,
-    //   justifyContent: "center",
-    //   alignItems: "center",
-    //   borderRadius: 5,
-    //   borderWidth: 0.5,
-    //   borderColor: "black",
-    //   marginBottom: 20,
-    //   backgroundColor: '#fff'
-    // },
-    // option: {
-    //   justifyContent: "center",
-    //   alignItems: "center",
-    // },
-    // textOption: {
-    //   fontSize: 16,
-    //   textAlign: "center",
-    //   fontWeight: 'bold'
-    // },
     content: {
         width: "100%",
         height: 45,

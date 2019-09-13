@@ -58,7 +58,8 @@ import DetailStore from "../screens/mrbean/DetailStore";
 import EditPost from "../screens/edit_post/EditPost";
 import EditOnePost from "../screens/edit_post/EditOnePost";
 import UsersCurrent from "../screens/users_current/UsersCurrent";
-
+import TabFollow from "../screens/follow/TabFollow";
+import Chat from "../screens/chat/Chat";
 
 class App extends Component {
 
@@ -161,6 +162,12 @@ const AppNavigator = createStackNavigator({
             header: null
         }
     },
+    TabFollow: {
+        screen: TabFollow,
+        navigationOptions: {
+            header: null
+        }
+    },
     Users: {
         screen: Users,
         navigationOptions: {
@@ -169,6 +176,12 @@ const AppNavigator = createStackNavigator({
     },
     UsersCurrent: {
         screen: UsersCurrent,
+        navigationOptions: {
+            header: null
+        }
+    },
+    Chat: {
+        screen: Chat,
         navigationOptions: {
             header: null
         }

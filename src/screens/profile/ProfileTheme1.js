@@ -331,7 +331,7 @@ export default class ProfileTheme1 extends Component {
                         <View style={styles.follows}>
                             <Icon8 style={styles.iconFollows} name="rss" size={px2dp(18)} color="#000"/>
                             <TextComponent style={styles.textFollows}>{Locales.Followedby}</TextComponent>
-                            <TouchableOpacity >
+                            <TouchableOpacity onPress={() => navigate("TabFollow")}>
                                 <TextComponent style={styles.numberFollows}>{this.state.currentUser.follow} {Locales.people}</TextComponent>
                             </TouchableOpacity>
                         </View>

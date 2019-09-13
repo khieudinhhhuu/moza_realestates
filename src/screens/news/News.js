@@ -83,10 +83,6 @@ export default class News extends Component {
         });
     }
 
-    _onUpdate(){
-        Alert.alert("Function is updating");
-    }
-
     render() {
         if (this.state.isLoading) {
             return (
@@ -101,7 +97,7 @@ export default class News extends Component {
                         <View style={styles.iconLeft}/>
                         {/*<Icon4 onPress={() => navigate('Menu')} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>*/}
                         <TextComponent style={styles.titleHeader}>{Locales.News}</TextComponent>
-                        <Icon onPress={() => this._onUpdate()} style={styles.iconBell} name="bell" size={px2dp(30)} />
+                        <Icon style={styles.iconBell} name="bell" size={px2dp(30)} />
                     </View>
                     <ActivityIndicator size="large" />
                 </View>
@@ -120,7 +116,7 @@ export default class News extends Component {
                     <View style={styles.iconLeft}/>
                     {/*<Icon4 onPress={() => navigate('Menu')} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>*/}
                     <TextComponent style={styles.titleHeader}>{Locales.News}</TextComponent>
-                    <Icon onPress={() => this._onUpdate()} style={styles.iconBell} name="bell" size={px2dp(30)} />
+                    <Icon style={styles.iconBell} name="bell" size={px2dp(30)} />
                 </View>
                 <View style={styles.body}>
                     <FlatList

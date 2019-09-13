@@ -99,14 +99,14 @@ export default class Signup extends Component {
         firebaseApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
             .then(() => {
                 this.id = firebaseApp.auth().getUid();
-                    firebaseApp.database().ref('users').child('accounts').child(this.id).set({
-                        displayName: this.state.displayName,
-                        phoneNumber: this.state.phoneNumber,
-                        email: this.state.email,
-                        password: this.state.password,
-                        follow: 0,
-                        uid: this.id,
-                    });
+                firebaseApp.database().ref('users').child('accounts').child(this.id).set({
+                    displayName: this.state.displayName,
+                    phoneNumber: this.state.phoneNumber,
+                    email: this.state.email,
+                    password: this.state.password,
+                    follow: 0,
+                    uid: this.id,
+                });
                 Alert.alert(
                     'Alert Title',
                     'Signup Success\n' + this.state.email,

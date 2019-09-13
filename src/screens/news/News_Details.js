@@ -90,10 +90,6 @@ export default class News_Details extends Component {
         });
     }
 
-    _onUpdate(){
-        Alert.alert("Function is updating");
-    }
-
     render() {
         const {navigate} = this.props.navigation;
         const {navigation} = this.props;
@@ -116,7 +112,7 @@ export default class News_Details extends Component {
                 <View style={styles.header}>
                     <Icon3 onPress={() => navigation.goBack()} style={styles.iconLeft} name="chevron-left" size={px2dp(30)}/>
                     <TextComponent style={styles.titleHeader}>{Locales.RealEstateNews}</TextComponent>
-                    <Icon onPress={() => this._onUpdate()} style={styles.iconSearch} name="search" size={px2dp(30)}/>
+                    <Icon style={styles.iconSearch} name="search" size={px2dp(30)}/>
                 </View>
                 <ScrollView>
                     <View style={styles.body}>

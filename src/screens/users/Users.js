@@ -327,7 +327,7 @@ export default class Users extends Component {
                                 <Icon6 style={styles.iconCall} name="phone" size={px2dp(15)} color="#fff"/>
                                 <TextComponent style={styles.textCall}>{Locales.CallPhone}</TextComponent>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.btnChat, {backgroundColor: color}]} onPress={() => Linking.openURL(`sms:${item.phoneNumber}`)}>
+                            <TouchableOpacity style={[styles.btnChat, {backgroundColor: color}]} onPress={() => navigate("Chat", {item: this.state.followUser})}>
                                 <Icon4 style={styles.iconChat} name="wechat" size={px2dp(15)} color="#fff"/>
                                 <TextComponent style={styles.textChat}>{Locales.Chat}</TextComponent>
                             </TouchableOpacity>

@@ -42,16 +42,15 @@ function px2dp(px) {
     return px * deviceW / basePx
 }
 
-export default class TabFollow extends Component {
+class TabFollow extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            check: false
-        }
     }
 
     render() {
+        const {navigate} = this.props.navigation;
+        const {navigation} = this.props;
         return (
             <View style={styles.container}>
                 <StatusBar
@@ -60,11 +59,6 @@ export default class TabFollow extends Component {
                     backgroundColor="transparent"
                     translucent
                 />
-                <View style={styles.header}>
-                    <Icon3 onPress={() => navigation.goBack()} style={styles.iconLeft} name="chevron-left" size={px2dp(30)}/>
-                    <TextComponent style={styles.titleHeader}>{Locales.RealEstateNews}</TextComponent>
-                    <Icon style={styles.iconSearch} name="search" size={px2dp(30)}/>
-                </View>
             </View>
         );
     }
@@ -74,41 +68,15 @@ const styles = EStyleSheet.create({
     container: {
         flex: 1,
         alignItems: "center",
-        backgroundColor: "red"
-    },
-    header: {
-        width: setWidth("100%"),
-        height: 70,
-        backgroundColor: "$header",
-        justifyContent: "space-between",
-        alignItems: "center",
-        flexDirection: 'row',
-    },
-    iconLeft: {
-        marginTop: 20,
-        color: colors.white,
-        marginLeft: 5,
-    },
-    titleHeader: {
-        color: colors.white,
-        textAlign: "center",
-        ...large_bold,
-        marginTop: 20,
-    },
-    iconSearch: {
-        marginTop: 20,
-        color: colors.white,
-        marginRight: 5,
     },
 });
 
-
 const TabScreen = createMaterialTopTabNavigator(
     {
-        Messages: {
+        Following: {
             screen: Following
         },
-        Notifications: {
+        Followers: {
             screen: Followers
         }
     },
@@ -134,27 +102,39 @@ const TabScreen = createMaterialTopTabNavigator(
     }
 );
 
+
 const App = createStackNavigator({
     TabScreen: {
         screen: TabScreen,
         navigationOptions: {
             headerStyle: {
-                backgroundColor: "#633689"
+                backgroundColor: "#368fc7",
+                width: setWidth("100%"),
+                height: 70,
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexDirection: 'row',
+                paddingHorizontal: 5
             },
             headerTintColor: "#FFFFFF",
-            //title: 'TabExample',
+            title: "Khiếu Đình Hữu",
+            headerTitleStyle: {
+                color: colors.white, ...large_bold, marginTop: 20
+            },
             header: (
                 <View
                     style={{
-                        height: "30%",
-                        //backgroundColor: '#fff',
-                        justifyContent: "center"
-                    }}
-                >
-                    <Image
-                        style={{width: "100%", height: "100%"}}
-                        source={require("../../image/notifi.png")}
-                    />
+                        width: setWidth("100%"),
+                        height: 70,
+                        backgroundColor: "#368fc7",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        flexDirection: 'row',
+                        paddingHorizontal: 5
+                    }}>
+                    <Icon3 style={{marginTop: 20, color: colors.white}} name="chevron-left" size={px2dp(30)}/>
+                    <TextComponent style={{color: colors.white, ...large_bold, marginTop: 20}}>Khiếu Đình Hữu</TextComponent>
+                    <Icon style={{marginTop: 20, color: colors.white}} name="search" size={px2dp(30)}/>
                 </View>
             )
         }
