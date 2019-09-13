@@ -310,7 +310,7 @@ export default class Users extends Component {
                     <View style={styles.body}>
                         <Image style={styles.imageBackground} source={require("../../assets/image/villa2.jpg")}/>
                         <View style={styles.avatar}>
-                            <Image style={styles.imageAvatar} resizeMode="cover" source={{uri: item.photoURL}}/>
+                            <Image style={styles.imageAvatar} resizeMode="cover" source={{uri: this.state.followUser.photoURL}}/>
                         </View>
                         <View style={styles.viewInformation}>
                             <TextComponent style={styles.textName}>{item.displayName}</TextComponent>

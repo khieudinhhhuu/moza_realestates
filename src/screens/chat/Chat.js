@@ -55,7 +55,9 @@ export default class Chat extends Component {
         super(props);
         this.state = {
             isLoading: true,
+            data: [],
             dataChat: [],
+            currentUser: "",
             message: "",
             photoURL: 'http://media2.sieuhai.tv:8088/onbox/images/user_lead_image/20190408/84947430634_20190408001343.jpg',
         };
@@ -64,11 +66,55 @@ export default class Chat extends Component {
     }
 
     componentDidMount() {
-        firebaseApp.database().ref('chats').on('value', function (snapshot) {
-            thisState.setState({
-                dataChat: Object.values(snapshot.val())
+        const item = this.props.navigation.state.params.item;
+        this.setState({
+            photoURL: item.photoURL
+        });
+
+        const user = firebaseApp.auth().currentUser;
+        firebaseApp.database().ref('users').child('accounts').on('value', function (snapshot) {
+            console.log("snapshot: " + JSON.stringify(snapshot));
+            //đây là hàm để lặp toàn bộ object trong mảng accounts
+            snapshot.forEach(function (childSnapshot) {
+                const childData = childSnapshot.val();
+                if (childData.uid === user.uid) {
+                    thisState.setState({
+                        isLoading: false,
+                        currentUser: childData,
+                    });
+                }
             });
         });
+
+        let array = [];
+        firebaseApp.database().ref('chats').on('value', function (snapshot) {
+            if(snapshot.val() !== undefined && snapshot.val() !== null ) {
+                thisState.setState({
+                    dataChat: Object.values(snapshot.val())
+                });
+            }
+        });
+
+        // snapshot.forEach(function (childSnapshot) {
+        //     const childData = childSnapshot.val();
+        //     if (childData.receiver === item.uid) {
+        //         array.push({
+        //             id: childSnapshot.key,
+        //             message: childData.message,
+        //             receiver: childData.receiver,
+        //             sender: childData.sender,
+        //         });
+        //         thisState.setState({
+        //             isLoading: false,
+        //             dataChat: array
+        //         });
+        //     }
+        // });
+        // thisState.setState({
+        //     isLoading: false,
+        //     dataChat: thisState.state.data
+        // });
+
     }
 
     onSendMessage(){
@@ -89,13 +135,13 @@ export default class Chat extends Component {
         if(user.uid === item.sender) {
             return(
                 <View style={{width: "100%", justifyContent: "center", alignItems: "center"}}>
-                    <ChatRightHolder message={item.message} />
+                    <ChatRightHolder message={item.message} photoURL={this.state.currentUser.photoURL}/>
                 </View>
             );
         } else {
             return(
                 <View style={{width: "100%", justifyContent: "center", alignItems: "center"}}>
-                    <ChatLeftHolder message={item.message} />
+                    <ChatLeftHolder message={item.message} photoURL={this.state.photoURL}/>
                 </View>
 
             );
@@ -116,7 +162,10 @@ export default class Chat extends Component {
                 />
                 <View style={styles.header}>
                     <Icon4 onPress={() => navigation.goBack()} style={styles.iconLeft} name="arrowleft" size={px2dp(28)}/>
-                    <TextComponent style={styles.titleHeader}>Chat</TextComponent>
+                    <View style={styles.avatar}>
+                        <Image style={styles.imageAvatarHeader} resizeMode="cover" source={{uri: item.photoURL}}/>
+                    </View>
+                    <TextComponent style={styles.titleNameHeader}>{item.displayName}</TextComponent>
                     <Icon style={styles.iconBell} name="bell" size={px2dp(30)} />
                 </View>
                 <KeyboardAwareScrollView style={styles.keyboardView}>
@@ -139,6 +188,7 @@ export default class Chat extends Component {
                             autoCorrect={false}
                             autoCapitalize="none"
                             onChangeText={(message) => this.setState({message})}
+                            value={this.state.message}
                         />
                     </View>
                     <TouchableOpacity onPress={() => this.onSendMessage()}>
@@ -170,11 +220,25 @@ const styles = EStyleSheet.create({
         marginTop: 20,
         color: colors.white,
     },
-    titleHeader: {
+    avatar: {
+        width: 30,
+        height: 30,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 30,
+        marginTop: 20,
+    },
+    imageAvatarHeader: {
+        width: 30,
+        height: 30,
+        borderRadius: 30,
+    },
+    titleNameHeader: {
         color: colors.white,
         textAlign: "center",
         ...large_bold,
         marginTop: 20,
+        marginRight: "25%",
     },
     iconBell: {
         marginTop: 20,

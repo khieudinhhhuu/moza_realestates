@@ -8,7 +8,7 @@ export const ChatLeftHolder = (props) => {
     return (
         <View style={styles.left}>
             <View style={styles.avatarLeft}>
-                <Image style={styles.imageAvatar} resizeMode="cover" source={{uri: "http://media2.sieuhai.tv:8088/onbox/images/user_lead_image/20190408/84947430634_20190408001343.jpg"}}/>
+                <Image style={styles.imageAvatar} resizeMode="cover" source={{uri: props.photoURL}}/>
             </View>
             <View style={styles.messageLeft}>
                 <TextComponent style={styles.textLeft}>{props.message}</TextComponent>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     textLeft: {
-        fontSize: 15,
+        fontSize: 17,
         color: colors.white
     },
 });
