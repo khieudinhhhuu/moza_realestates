@@ -22,6 +22,9 @@ import {
     Modal
 } from "react-native";
 import {createDrawerNavigator, createStackNavigator, createAppContainer} from "react-navigation";
+// import {createAppContainer} from 'react-navigation';
+// import {createDrawerNavigator} from 'react-navigation-drawer';
+// import {createStackNavigator} from 'react-navigation-stack';
 import * as firebase from "firebase";
 import Splash from "../screens/splash/Splash";
 import Splash2 from "../screens/splash2/Splash2";
@@ -61,21 +64,101 @@ import UsersCurrent from "../screens/users_current/UsersCurrent";
 import TabFollow from "../screens/follow/TabFollow";
 import Chat from "../screens/chat/Chat";
 
-class App extends Component {
+import CustomSidebarMenu from '../screens/drawer/CustomSidebarMenu';
+import {Icon} from 'native-base';
 
+class App extends Component {
     render() {
         return <View style={styles.container}/>;
     }
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#F5FCFF"
+        backgroundColor: "#fff"
     }
 });
+
+
+// class NavigationDrawerStructure extends Component {
+//     constructor(props) {
+//         super(props);
+//         this.state = {
+//             name: '',
+//             avartar: 'https://www.w3schools.com/w3images/avatar2.png',
+//         };
+//     }
+//
+//     toggleDrawer = () => {
+//         this.props.navigationProps.toggleDrawer();
+//     };
+//     render() {
+//         return (
+//             <View style={{ flexDirection: 'row' }}>
+//                 <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
+//                     <Icon name='menu' type='Feather' style={{fontSize: 30, marginLeft:10, color: '#000'}}/>
+//                 </TouchableOpacity>
+//             </View>
+//         );
+//     }
+// }
+//
+// const FirstActivity_StackNavigator = createStackNavigator({
+//     First: {
+//         screen: Home,
+//         navigationOptions: ({ navigation }) => ({
+//             title: 'Demo Screen 1',
+//             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+//             headerStyle: {
+//                 backgroundColor: '#FF9800',
+//             },
+//             headerTintColor: '#fff',
+//         }),
+//     },
+// });
+//
+// const Screen2_StackNavigator = createStackNavigator({
+//     Second: {
+//         screen: Profile,
+//         navigationOptions: ({ navigation }) => ({
+//             title: 'Demo Screen 2',
+//             headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+//
+//             headerStyle: {
+//                 backgroundColor: '#FF9800',
+//             },
+//             headerTintColor: '#fff',
+//         }),
+//     },
+// });
+//
+// const DrawerNavigatorExample = createDrawerNavigator(
+//     {
+//         //Drawer Optons and indexing
+//         NavScreen1: {
+//             screen: FirstActivity_StackNavigator,
+//             navigationOptions: {
+//                 drawerLabel: 'Demo Screen 1',
+//             },
+//         },
+//         NavScreen2: {
+//             screen: Screen2_StackNavigator,
+//             navigationOptions: {
+//                 drawerLabel: 'Demo Screen 2',
+//             },
+//         },
+//     },
+//     {
+//         //For the Custom sidebar menu we have to provide our CustomSidebarMenu
+//         contentComponent: CustomSidebarMenu,
+//         //Sidebar width
+//         drawerWidth: Dimensions.get('window').width - 130,
+//     }
+// );
+
+
+
 
 const AppNavigator = createStackNavigator({
     Splash: {

@@ -238,7 +238,7 @@ export default class HomeTheme1 extends Component {
         if (item.status === undefined) {
             this.props.navigation.navigate('Sell_Detail', {item: item});
         } else {
-            this.props.navigation.navigate('Properties');
+            this.props.navigation.navigate('Details', {item: item});
         }
     }
 
